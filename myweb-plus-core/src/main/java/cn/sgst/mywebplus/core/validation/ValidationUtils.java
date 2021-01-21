@@ -111,7 +111,7 @@ public class ValidationUtils {
      * @return {@link BeanValidationResult}
      */
     public static <T> BeanValidationResult warpBeanValidationResult(BindingResult bindingResult) {
-        BeanValidationResult result = new BeanValidationResult(bindingResult.hasFieldErrors());
+        BeanValidationResult result = new BeanValidationResult(!bindingResult.hasFieldErrors());
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             BeanValidationResult.ErrorMessage errorMessage = new BeanValidationResult.ErrorMessage();
             errorMessage.setPropertyName(fieldError.getField());
