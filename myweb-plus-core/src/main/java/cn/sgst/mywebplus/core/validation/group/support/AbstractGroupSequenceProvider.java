@@ -58,7 +58,7 @@ public abstract class AbstractGroupSequenceProvider<T> implements DefaultGroupSe
     @Scope(WebApplicationContext.SCOPE_REQUEST)
     @Getter
     @Setter
-    private static class RequestHolder {
+    static class RequestHolder {
 
         private final List<Holder> holders = new ArrayList<>();
 
