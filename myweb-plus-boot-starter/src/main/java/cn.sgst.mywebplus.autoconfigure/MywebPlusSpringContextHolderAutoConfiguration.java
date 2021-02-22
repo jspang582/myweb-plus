@@ -1,7 +1,6 @@
 package cn.sgst.mywebplus.autoconfigure;
 
-import cn.sgst.mywebplus.core.SpringContextHolder;
-import org.springframework.context.annotation.Bean;
+import cn.sgst.mywebplus.core.EnableBeanHolder;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,10 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * @date: 2021/1/7 15:55
  */
 @Configuration
+@EnableBeanHolder
 public class MywebPlusSpringContextHolderAutoConfiguration {
-
-    @Bean
-    public SpringContextHolder springContextHolder() {
-        return new SpringContextHolder();
-    }
 }

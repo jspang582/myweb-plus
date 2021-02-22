@@ -15,5 +15,6 @@ public class UserGroupProvider extends AbstractGroupSequenceProvider<User> {
     @Override
     protected void doSetValidationGroups(User user, Set<Class<?>> groupSequence) {
         // 业务逻辑
+        System.out.println(user);
     }
 }

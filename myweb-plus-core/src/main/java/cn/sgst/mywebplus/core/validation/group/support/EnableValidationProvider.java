@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core.validation.group.support;
 
+import cn.sgst.mywebplus.core.EnableBeanHolder;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -15,5 +16,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({AbstractGroupSequenceProvider.RequestHolder.class})
+@EnableBeanHolder
 public @interface EnableValidationProvider {
 }

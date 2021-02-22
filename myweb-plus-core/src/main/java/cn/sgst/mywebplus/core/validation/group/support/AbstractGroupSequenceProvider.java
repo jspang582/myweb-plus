@@ -40,10 +40,15 @@ public abstract class AbstractGroupSequenceProvider<T> implements DefaultGroupSe
 
     /**
      * 由子类去真正实现动态组的逻辑
+     * @param object javaBean
+     * @param groupSequence 动态组集合
      */
     protected abstract void doSetValidationGroups(T object, Set<Class<?>> groupSequence);
 
 
+    /**
+     * 获取泛型的Class类型
+     */
     private Class<?> getTClass() {
         //返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type。
         ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
@@ -80,11 +85,6 @@ public abstract class AbstractGroupSequenceProvider<T> implements DefaultGroupSe
                 }
             }
         }
-
-        public static RequestHolder create() {
-            return SpringContextHolder.getBean(RequestHolder.class);
-        }
-
 
         @Getter
         @Setter
