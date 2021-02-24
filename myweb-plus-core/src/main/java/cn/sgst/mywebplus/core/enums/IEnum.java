@@ -9,7 +9,18 @@ package cn.sgst.mywebplus.core.enums;
  */
 public interface IEnum<K,V> {
 
+
+    /**
+     * 获取value值
+     *
+     * @return value
+     */
     K getValue();
 
+
+    /**
+     * 获取文本值
+     * @return text
+     */
     V getText();
 }

@@ -23,7 +23,7 @@ public class EnumUtils {
      * @param clazz 类
      * @return 是否为Enum类
      */
-    public static boolean isEnum(Class<? extends IEnum> clazz) {
+    public static boolean isEnum(Class<?> clazz) {
         if(clazz == null) {
             throw new IllegalArgumentException("clazz must not be null");
         }
@@ -37,7 +37,7 @@ public class EnumUtils {
      * @param e Enum
      * @return name值
      */
-    public static String toString(Enum<? extends IEnum> e) {
+    public static String toString(Enum<?> e) {
         return null != e ? e.name() : null;
     }
 
@@ -47,7 +47,7 @@ public class EnumUtils {
      * @param clazz 枚举类
      * @return value值列表
      */
-    public static <K, V> List<K> getValues(Class<? extends IEnum<K, V>> clazz) {
+    public static <K, V,T extends IEnum<K, V>>  List<K> getValues(Class<T> clazz) {
         return getEnumConstants(clazz).stream().map(IEnum::getValue).collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class EnumUtils {
      * @param clazz 枚举类
      * @return text值列表
      */
-    public static <K, V> List<V> getTexts(Class<? extends IEnum<K, V>> clazz) {
+    public static <K, V,T extends IEnum<K, V>> List<V> getTexts(Class<T> clazz) {
         return getEnumConstants(clazz).stream().map(IEnum::getText).collect(Collectors.toList());
     }
 
@@ -68,7 +68,7 @@ public class EnumUtils {
      * @param clazz clazz 枚举类
      * @return 枚举对象列表
      */
-    public static <K, V> List<IEnum<K, V>> getEnumConstants(Class<? extends IEnum<K, V>> clazz) {
+    public static <K, V,T extends IEnum<K, V>> List<IEnum<K, V>> getEnumConstants(Class<T> clazz) {
         assertEnum(clazz);
         final IEnum<K, V>[] enums = clazz.getEnumConstants();
         if (enums == null) {
@@ -85,7 +85,7 @@ public class EnumUtils {
      * @param clazz 枚举类
      * @return 字典集合
      */
-    public static<K, V> List<Dict<K,V>> getEnumDicts(Class<? extends IEnum<K, V>> clazz) {
+    public static <K, V,T extends IEnum<K, V>> List<Dict<K,V>> getEnumDicts(Class<T> clazz) {
         List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
         return enumConstants.stream().map(iEnum -> new Dict<>(iEnum.getValue(), iEnum.getText())).collect(Collectors.toList());
     }
@@ -98,7 +98,7 @@ public class EnumUtils {
      * @param value value值
      * @return 枚举对象
      */
-    public static <K, V> IEnum<K, V> fromValue(Class<? extends IEnum<K, V>> clazz, Object value) {
+    public static <K, V,T extends IEnum<K,V>> IEnum<K, V> fromValue(Class<T> clazz, Object value) {
         assertEnum(clazz);
         List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
         for (IEnum<K, V> e : enumConstants) {
@@ -116,7 +116,7 @@ public class EnumUtils {
      * @param text text值
      * @return 枚举对象
      */
-    public static <K, V> IEnum<K, V> fromText(Class<? extends IEnum<K, V>> clazz, Object text) {
+    public static <K, V,T extends IEnum<K,V>> IEnum<K, V> fromText(Class<T> clazz, Object text) {
         assertEnum(clazz);
         List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
         for (IEnum<K, V> e : enumConstants) {
@@ -133,7 +133,7 @@ public class EnumUtils {
      * @param value value值
      * @return 对应的text
      */
-    public static <K, V> V getTextFromValue(Class<? extends IEnum<K, V>> clazz, Object value) {
+    public static <K, V,T extends IEnum<K,V>> V getTextFromValue(Class<T> clazz, Object value) {
         IEnum<K, V> e = fromValue(clazz, value);
         return e == null ? null : e.getText();
     }
@@ -145,7 +145,7 @@ public class EnumUtils {
      * @param text text值
      * @return 对应的value值
      */
-    public static <K, V> K getValueFromText(Class<? extends IEnum<K, V>> clazz, Object text) {
+    public static <K, V,T extends IEnum<K,V>> K getValueFromText(Class<T> clazz, Object text) {
         IEnum<K, V> e = fromText(clazz, text);
         return e == null ? null : e.getValue();
     }
@@ -156,7 +156,7 @@ public class EnumUtils {
      *
      * @param clazz 类
      */
-    private static void assertEnum(Class<? extends IEnum> clazz) {
+    private static void assertEnum(Class<?> clazz) {
         if(!isEnum(clazz)) {
             throw new IllegalArgumentException("clazz must be enum type");
         }
