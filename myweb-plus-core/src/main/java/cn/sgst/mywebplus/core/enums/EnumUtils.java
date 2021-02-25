@@ -68,9 +68,9 @@ public class EnumUtils {
      * @param clazz clazz 枚举类
      * @return 枚举对象列表
      */
-    public static <K, V,T extends IEnum<K, V>> List<IEnum<K, V>> getEnumConstants(Class<T> clazz) {
+    public static <K, V,T extends IEnum<K, V>> List<T> getEnumConstants(Class<T> clazz) {
         assertEnum(clazz);
-        final IEnum<K, V>[] enums = clazz.getEnumConstants();
+        final T[] enums = clazz.getEnumConstants();
         if (enums == null) {
             return new ArrayList<>();
         }
@@ -86,7 +86,7 @@ public class EnumUtils {
      * @return 字典集合
      */
     public static <K, V,T extends IEnum<K, V>> List<Dict<K,V>> getEnumDicts(Class<T> clazz) {
-        List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
+        List<T> enumConstants = getEnumConstants(clazz);
         return enumConstants.stream().map(iEnum -> new Dict<>(iEnum.getValue(), iEnum.getText())).collect(Collectors.toList());
     }
 
@@ -98,10 +98,10 @@ public class EnumUtils {
      * @param value value值
      * @return 枚举对象
      */
-    public static <K, V,T extends IEnum<K,V>> IEnum<K, V> fromValue(Class<T> clazz, Object value) {
+    public static <K, V,T extends IEnum<K,V>> T fromValue(Class<T> clazz, Object value) {
         assertEnum(clazz);
-        List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
-        for (IEnum<K, V> e : enumConstants) {
+        List<T> enumConstants = getEnumConstants(clazz);
+        for (T e : enumConstants) {
             if (Objects.equals(value, e.getValue())) {
                 return e;
             }
@@ -116,10 +116,10 @@ public class EnumUtils {
      * @param text text值
      * @return 枚举对象
      */
-    public static <K, V,T extends IEnum<K,V>> IEnum<K, V> fromText(Class<T> clazz, Object text) {
+    public static <K, V,T extends IEnum<K,V>> T fromText(Class<T> clazz, Object text) {
         assertEnum(clazz);
-        List<IEnum<K, V>> enumConstants = getEnumConstants(clazz);
-        for (IEnum<K, V> e : enumConstants) {
+        List<T> enumConstants = getEnumConstants(clazz);
+        for (T e : enumConstants) {
             if (Objects.equals(text, e.getText())) {
                 return e;
             }
