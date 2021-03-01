@@ -150,6 +150,23 @@ public class EnumUtils {
         return e == null ? null : e.getValue();
     }
 
+    /**
+     * 添加一个枚举类的所有枚举值,看起来像继承
+     *
+     * @param to 要修改的枚举类型
+     * @param from 来源枚举类型
+     */
+    public static <T extends Enum<?>,G extends Enum<?>> void extendIEnum(Class<T> to,Class<G> from) {
+        if(from.isAssignableFrom(IEnum.class)) {
+            throw new RuntimeException("class " + from + " is not an instance of IEnum");
+        }
+        G[] constants = from.getEnumConstants();
+        for (G constant : constants) {
+            IEnum iEnum = (IEnum)constant;
+            DynamicEnumUtils.addEnum(to,constant.name(),new Class<?>[] {iEnum.getValue().getClass(),iEnum.getText().getClass()}, new Object[] {iEnum.getValue(),iEnum.getText()});
+        }
+    }
+
 
     /**
      * 断言是否是枚举类型
