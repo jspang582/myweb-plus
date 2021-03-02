@@ -155,16 +155,36 @@ public class EnumUtils {
      *
      * @param to 要修改的枚举类型
      * @param from 来源枚举类型
+     * @param ignoreDuplicated 是否忽略重复值
      */
-    public static <T extends Enum<?>,G extends Enum<?>> void extendIEnum(Class<T> to,Class<G> from) {
+    public static <T extends Enum<?>,G extends Enum<?>> void extendIEnum(Class<T> to,Class<G> from,boolean ignoreDuplicated) {
+        if(to.isAssignableFrom(IEnum.class)) {
+            throw new RuntimeException("class " + from + " is not an instance of IEnum");
+        }
         if(from.isAssignableFrom(IEnum.class)) {
             throw new RuntimeException("class " + from + " is not an instance of IEnum");
         }
+
+        T[] toEnums = to.getEnumConstants();
+        List<Object> toEnumValues = Arrays.stream(toEnums).map(toEnum -> ((IEnum) toEnum).getValue()).collect(Collectors.toList());
         G[] constants = from.getEnumConstants();
         for (G constant : constants) {
             IEnum iEnum = (IEnum)constant;
+            if(ignoreDuplicated && toEnumValues.contains(iEnum.getValue())){
+                continue;
+            }
             DynamicEnumUtils.addEnum(to,constant.name(),new Class<?>[] {iEnum.getValue().getClass(),iEnum.getText().getClass()}, new Object[] {iEnum.getValue(),iEnum.getText()});
         }
+    }
+
+    /**
+     * 添加一个枚举类的所有枚举值,看起来像继承
+     *
+     * @param to 要修改的枚举类型
+     * @param from 来源枚举类型
+     */
+    public static <T extends Enum<?>,G extends Enum<?>> void extendIEnum(Class<T> to,Class<G> from) {
+        extendIEnum(to,from,true);
     }
 
 
@@ -175,7 +195,7 @@ public class EnumUtils {
      */
     private static void assertEnum(Class<?> clazz) {
         if(!isEnum(clazz)) {
-            throw new IllegalArgumentException("clazz must be enum type");
+            throw new IllegalArgumentException("class " + clazz + " is not an instance of Enum");
         }
     }
 }
