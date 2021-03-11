@@ -30,16 +30,22 @@ public class EnumValueValidator extends AbstractEmptyBasedValidator<EnumValue, O
 
 
     @Override
+    @SuppressWarnings("all")
     public boolean isValid(Object value) {
-        List<? extends IEnum> enumConstants = Arrays.asList(targetEnum.getEnumConstants());
-        List<String> enumValues = enumConstants.stream().map(enumConstant -> {
-            // 统一转成字符串比较,防止类型不一样时比较结果为不相等
-            return enumConstant.getValue() == null ? null : enumConstant.getValue().toString();
-        }).collect(Collectors.toList());
-        if (!multiAllowed) {
-            return enumValues.contains(String.valueOf(value));
+        // 只允许是Number 或者 String类型
+        if(!(value instanceof Number || value instanceof String)) {
+            return false;
         }
-        List<String> values = Arrays.asList(StringUtils.split(String.valueOf(value), separator));
+        List<String> enumValues = Arrays.stream(targetEnum.getEnumConstants()).map(item -> {
+            // 调用toString()方法
+            return item.getValue().toString();
+        }).collect(Collectors.toList());
+        // 不允许多值
+        if (!multiAllowed) {
+            return enumValues.contains(value.toString());
+        }
+        // 允许多值
+        List<String> values = Arrays.asList(StringUtils.split(value.toString(), separator));
         return CollUtil.containsAll(enumValues, values);
     }
 }

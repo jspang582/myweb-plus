@@ -15,7 +15,7 @@ import java.util.Objects;
  * @email: fli@sstir.cn
  * @date: 2021/2/24 13:54
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({"all"})
 public class StringToIEnumConverterFactory implements ConverterFactory<String, IEnum> {
 
     @Override
@@ -45,6 +45,7 @@ public class StringToIEnumConverterFactory implements ConverterFactory<String, I
     private static <T extends IEnum> T getIEnum(Class<T> targetType, String source) {
         T[] enumConstants = targetType.getEnumConstants();
         for (T enumObj : enumConstants) {
+            // V泛型转toString判断相等,比如 Integer 1 = String 1
             if (Objects.equals(source, enumObj.getValue().toString())) {
                 return enumObj;
             }

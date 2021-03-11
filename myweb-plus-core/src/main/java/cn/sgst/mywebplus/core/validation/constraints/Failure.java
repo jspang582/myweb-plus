@@ -18,6 +18,7 @@ import static java.lang.annotation.ElementType.*;
  */
 @Target({FIELD,PARAMETER,ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Repeatable(Failure.List.class)
 @Constraint(validatedBy = {FailureValidator.class})
 public @interface Failure {
