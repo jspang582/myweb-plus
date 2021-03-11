@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * @email: fli@sstir.cn
  * @date: 2021/1/5 15:35
  */
+@SuppressWarnings("all")
 public class EnumUtils {
 
     /**
@@ -98,7 +99,7 @@ public class EnumUtils {
      * @param value value值
      * @return 枚举对象
      */
-    public static <K, V,T extends IEnum<K,V>> T fromValue(Class<T> clazz, Object value) {
+    public static <K, V,T extends IEnum<K,V>> T fromValue(Class<T> clazz, K value) {
         assertEnum(clazz);
         List<T> enumConstants = getEnumConstants(clazz);
         for (T e : enumConstants) {
@@ -116,7 +117,7 @@ public class EnumUtils {
      * @param text text值
      * @return 枚举对象
      */
-    public static <K, V,T extends IEnum<K,V>> T fromText(Class<T> clazz, Object text) {
+    public static <K, V,T extends IEnum<K,V>> T fromText(Class<T> clazz, V text) {
         assertEnum(clazz);
         List<T> enumConstants = getEnumConstants(clazz);
         for (T e : enumConstants) {
@@ -133,7 +134,7 @@ public class EnumUtils {
      * @param value value值
      * @return 对应的text
      */
-    public static <K, V,T extends IEnum<K,V>> V getTextFromValue(Class<T> clazz, Object value) {
+    public static <K, V,T extends IEnum<K,V>> V getTextFromValue(Class<T> clazz, K value) {
         IEnum<K, V> e = fromValue(clazz, value);
         return e == null ? null : e.getText();
     }
@@ -145,7 +146,7 @@ public class EnumUtils {
      * @param text text值
      * @return 对应的value值
      */
-    public static <K, V,T extends IEnum<K,V>> K getValueFromText(Class<T> clazz, Object text) {
+    public static <K, V,T extends IEnum<K,V>> K getValueFromText(Class<T> clazz, V text) {
         IEnum<K, V> e = fromText(clazz, text);
         return e == null ? null : e.getValue();
     }
