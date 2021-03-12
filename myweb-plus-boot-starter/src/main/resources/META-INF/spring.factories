@@ -1,5 +1,6 @@
 # AutoConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 cn.sgst.mywebplus.autoconfigure.MywebPlusErrorAutoConfiguration,\
+cn.sgst.mywebplus.autoconfigure.MywebPlusJacksonAutoConfiguration,\
 cn.sgst.mywebplus.autoconfigure.MywebPlusParameterFilterAutoConfiguration,\
 cn.sgst.mywebplus.autoconfigure.MywebPlusSpringContextHolderAutoConfiguration
