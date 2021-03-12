@@ -19,9 +19,9 @@ public class UserConvertController {
      * form表单提交
      */
     @PostMapping("/add")
-    public ApiResult<Void> add(User user) {
+    public ApiResult<User> add(User user) {
         System.out.println(user);
-        return ApiResult.success();
+        return ApiResult.success(user);
     }
 
 
@@ -29,8 +29,8 @@ public class UserConvertController {
      * json提交
      */
     @PostMapping("/add1")
-    public ApiResult<Void> add1(@RequestBody User user) {
+    public ApiResult<User> add1(@RequestBody User user) {
         System.out.println(user);
-        return ApiResult.success();
+        return ApiResult.success(user);
     }
 }

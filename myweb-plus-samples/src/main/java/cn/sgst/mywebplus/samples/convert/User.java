@@ -1,7 +1,9 @@
 package cn.sgst.mywebplus.samples.convert;
 
+import cn.sgst.mywebplus.core.serializer.IEnumSerializer;
 import cn.sgst.mywebplus.samples.serialize.SexEnum;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 /**
@@ -14,6 +16,6 @@ public class User {
 
     private String name;
     private Integer age;
-    //@JsonDeserialize(using = IEnumDeserializer.class)
+    @JsonSerialize(using = IEnumSerializer.class)
     private SexEnum sex;
 }

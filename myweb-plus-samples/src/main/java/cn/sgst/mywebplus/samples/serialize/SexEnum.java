@@ -1,6 +1,7 @@
 package cn.sgst.mywebplus.samples.serialize;
 
 import cn.sgst.mywebplus.core.enums.IEnum;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -27,6 +28,16 @@ public enum SexEnum implements IEnum<String,String> {
 
     private final String sexCode;
     private final String sexDesc;
+
+    @JsonCreator
+    public static SexEnum fromValue(String value) {
+        for (SexEnum item : SexEnum.values()) {
+            if(item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
 
     @Override
     public String getValue() {
