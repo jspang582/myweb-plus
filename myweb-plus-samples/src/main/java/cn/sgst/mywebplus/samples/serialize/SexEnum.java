@@ -4,7 +4,6 @@ import cn.sgst.mywebplus.core.enums.IEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 /**
  * 性别枚举
  *
@@ -38,6 +37,7 @@ public enum SexEnum implements IEnum<String,String> {
         }
         return null;
     }
+
 
     @Override
     public String getValue() {
