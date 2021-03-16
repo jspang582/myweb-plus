@@ -3,7 +3,7 @@ package cn.sgst.mywebplus.core.validation;
 import cn.hutool.core.collection.CollUtil;
 import cn.sgst.mywebplus.core.validation.group.Required;
 import org.springframework.util.Assert;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
@@ -22,9 +22,9 @@ public class ValidationRequiredUtils {
 
 
     /**
-     * 校验FieldError集合中是否有Required错误
+     * 校验ObjectError集合中是否有Required错误
      */
-    public static boolean hasRequiredError(@NotNull Collection<FieldError> errors) {
+    public static <T extends ObjectError> boolean hasRequiredError(@NotNull Collection<T> errors) {
         Assert.notNull(errors,"errors must not be null");
         return countRequiredErrors(errors) > 0;
     }
@@ -34,7 +34,7 @@ public class ValidationRequiredUtils {
      * 是否都是Required错误
      * 集合为空时 return true
      */
-    public static boolean isAllRequiredErrors(@NotNull Collection<FieldError> errors) {
+    public static <T extends ObjectError>  boolean isAllRequiredErrors(@NotNull Collection<T> errors) {
         Assert.notNull(errors,"errors must not be null");
         return countRequiredErrors(errors) == errors.size();
     }
@@ -43,16 +43,16 @@ public class ValidationRequiredUtils {
      * Required错误的个数
      */
 
-    public static long countRequiredErrors(@NotNull Collection<FieldError> errors) {
+    public static <T extends ObjectError>  long countRequiredErrors(@NotNull Collection<T> errors) {
         Assert.notNull(errors,"errors must not be null");
        return filterRequiredErrors(errors).size();
     }
 
     /**
-     * 从FieldError集合中筛选出Required的Error
+     * 从ObjectError集合中筛选出Required的Error
      */
     @SuppressWarnings("all")
-    public static Collection<FieldError> filterRequiredErrors(@NotNull Collection<FieldError> errors) {
+    public static <T extends ObjectError> Collection<T> filterRequiredErrors(@NotNull Collection<T> errors) {
         Assert.notNull(errors,"errors must not be null");
         return errors.stream().filter(error -> {
                 ConstraintViolation violation = ValidationViolationUtils.getViolationFieldValue(error);
@@ -67,9 +67,9 @@ public class ValidationRequiredUtils {
     }
 
     /**
-     * 从FieldError集合中移出Required的Error
+     * 从ObjectError集合中移出Required的Error
      */
-    public static Collection<FieldError> removeRequiredErrors(@NotNull Collection<FieldError> errors) {
+    public static <T extends ObjectError> Collection<T> removeRequiredErrors(@NotNull Collection<T> errors) {
         Assert.notNull(errors,"errors must not be null");
         return CollUtil.disjunction(errors,filterRequiredErrors(errors));
     }

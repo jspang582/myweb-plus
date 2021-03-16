@@ -1,7 +1,7 @@
 package cn.sgst.mywebplus.core.validation;
 
 import org.springframework.util.Assert;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.validation.ConstraintViolation;
@@ -24,7 +24,7 @@ public class ValidationViolationUtils {
      * @return {@link ConstraintViolation}
      */
 
-    public static ConstraintViolation getViolationFieldValue(@NotNull FieldError error) {
+    public static ConstraintViolation getViolationFieldValue(@NotNull ObjectError error) {
         Assert.notNull(error,"fieldError must not be null");
         Class clazz = null;
         try {
@@ -41,7 +41,7 @@ public class ValidationViolationUtils {
      * 反射获取{@link org.springframework.validation.beanvalidation.SpringValidatorAdapter $ViolationFieldError } 私有属性adapter的值
      * @return ConstraintViolation
      */
-    public static SpringValidatorAdapter getAdapterFieldValue(FieldError error) {
+    public static SpringValidatorAdapter getAdapterFieldValue(ObjectError error) {
         Assert.notNull(error,"fieldError must not be null");
         Class clazz = null;
         try {
