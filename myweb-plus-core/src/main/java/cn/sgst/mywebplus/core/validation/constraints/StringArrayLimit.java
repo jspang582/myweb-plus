@@ -22,7 +22,7 @@ import static java.lang.annotation.ElementType.*;
 @Repeatable(StringArrayLimit.List.class)
 @Constraint(validatedBy = {StringArrayLimitValidator.class})
 public @interface StringArrayLimit {
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringArrayLimit}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringArrayLimit.message}";
 
     Class<?>[] groups() default {};
 

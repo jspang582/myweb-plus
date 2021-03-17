@@ -27,7 +27,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = PhoneValidator.class)
 public @interface Phone {
 
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Phone}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Phone.message}";
 
     Class<?>[] groups() default {};
 

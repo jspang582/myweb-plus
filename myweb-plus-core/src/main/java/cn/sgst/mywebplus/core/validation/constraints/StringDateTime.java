@@ -22,7 +22,7 @@ import static java.lang.annotation.ElementType.*;
 @Repeatable(StringDateTime.List.class)
 @Constraint(validatedBy = {StringDateTimeValidator.class})
 public @interface StringDateTime {
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringDateTime}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringDateTime.message}";
 
     Class<?>[] groups() default {};
 

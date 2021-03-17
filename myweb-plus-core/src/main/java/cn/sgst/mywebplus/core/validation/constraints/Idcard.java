@@ -28,7 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = IdCardValidator.class)
 public @interface Idcard {
 
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Idcard}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Idcard.message}";
 
     Class<?>[] groups() default {};
 

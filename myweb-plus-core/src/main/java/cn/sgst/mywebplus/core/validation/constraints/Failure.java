@@ -24,7 +24,7 @@ import static java.lang.annotation.ElementType.*;
 public @interface Failure {
 
 
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Failure}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Failure.message}";
 
     Class<?>[] groups() default {};
 

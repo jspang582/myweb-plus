@@ -26,7 +26,7 @@ import static java.lang.annotation.ElementType.*;
 @Constraint(validatedBy = {EnumValueValidator.class})
 public @interface EnumValue {
 
-    String message() default "{cn.sgst.mywebplus.core.validation.constraints.EnumValue}";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.EnumValue.message}";
 
     Class<?>[] groups() default {};
 
