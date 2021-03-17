@@ -3,6 +3,9 @@ package cn.sgst.mywebplus.core.validation.constraints;
 
 import cn.sgst.mywebplus.core.enums.IEnum;
 import cn.sgst.mywebplus.core.validation.constraintvalidators.EnumValueValidator;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.context.annotation.Primary;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -35,11 +38,12 @@ public @interface EnumValue {
     /**
      *需要校验的枚举Class
      */
-    Class<? extends IEnum> target();
+    Class<? extends IEnum> target() default EmptyEnum.class;
 
 
     /**
      * 是否允许多值
+     * use {@link EnumValues} instead
      */
     boolean multiAllowed() default false;
 
@@ -55,5 +59,20 @@ public @interface EnumValue {
     @interface List{
         EnumValue[] value();
     }
+
+
+    /**
+     * 空的枚举类
+     */
+    @Getter
+    @AllArgsConstructor
+    enum EmptyEnum implements IEnum<Object,Object> {
+        ;
+        private final Object text;
+        private final Object value;
+    }
+
+
+
 }
 
