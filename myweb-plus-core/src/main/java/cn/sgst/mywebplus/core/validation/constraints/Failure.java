@@ -16,7 +16,7 @@ import static java.lang.annotation.ElementType.*;
  * @email: fli@sstir.cn
  * @date: 2020/10/19 14:00
  */
-@Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(Failure.List.class)
@@ -24,7 +24,7 @@ import static java.lang.annotation.ElementType.*;
 public @interface Failure {
 
 
-    String message() default "校验失败";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Failure}";
 
     Class<?>[] groups() default {};
 
@@ -32,7 +32,7 @@ public @interface Failure {
 
 
     // 同时指定多个时使用
-    @Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface List{

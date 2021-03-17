@@ -16,13 +16,13 @@ import static java.lang.annotation.ElementType.*;
  * @email: fli@sstir.cn
  * @date: 2020/8/31 11:00
  */
-@Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(StringDateTime.List.class)
 @Constraint(validatedBy = {StringDateTimeValidator.class})
 public @interface StringDateTime {
-    String message() default "时间格式不正确";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringDateTime}";
 
     Class<?>[] groups() default {};
 
@@ -40,7 +40,7 @@ public @interface StringDateTime {
     boolean strict() default true;
 
     // 同时指定多个时使用
-    @Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface List{

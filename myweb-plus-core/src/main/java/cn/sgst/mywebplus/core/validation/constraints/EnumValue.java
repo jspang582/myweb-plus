@@ -19,14 +19,14 @@ import static java.lang.annotation.ElementType.*;
  * @date: 2020/8/22 11:35
  */
 
-@Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(EnumValue.List.class)
 @Constraint(validatedBy = {EnumValueValidator.class})
 public @interface EnumValue {
 
-    String message() default "非法的枚举值";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.EnumValue}";
 
     Class<?>[] groups() default {};
 
@@ -49,7 +49,7 @@ public @interface EnumValue {
     String separator() default ",";
 
     // 同时指定多个时使用
-    @Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface List{

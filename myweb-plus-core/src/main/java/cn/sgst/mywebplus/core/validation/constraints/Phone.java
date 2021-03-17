@@ -27,7 +27,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = PhoneValidator.class)
 public @interface Phone {
 
-    String message() default "手机号格式不正确";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.Phone}";
 
     Class<?>[] groups() default {};
 

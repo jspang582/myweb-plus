@@ -16,13 +16,13 @@ import static java.lang.annotation.ElementType.*;
  * @email: fli@sstir.cn
  * @date: 2020/10/18 9:45
  */
-@Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(StringArrayLimit.List.class)
 @Constraint(validatedBy = {StringArrayLimitValidator.class})
 public @interface StringArrayLimit {
-    String message() default "元素个数必须在{min}到{max}之间";
+    String message() default "{cn.sgst.mywebplus.core.validation.constraints.StringArrayLimit}";
 
     Class<?>[] groups() default {};
 
@@ -51,7 +51,7 @@ public @interface StringArrayLimit {
 
 
     // 同时指定多个时使用
-    @Target({FIELD,PARAMETER,ANNOTATION_TYPE})
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @interface List{
