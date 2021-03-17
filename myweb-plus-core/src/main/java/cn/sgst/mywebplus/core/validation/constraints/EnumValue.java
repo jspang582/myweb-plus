@@ -5,8 +5,6 @@ import cn.sgst.mywebplus.core.enums.IEnum;
 import cn.sgst.mywebplus.core.validation.constraintvalidators.EnumValueValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.context.annotation.Primary;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;

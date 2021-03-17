@@ -34,7 +34,7 @@ public class EnumValueValidator extends AbstractEmptyBasedValidator<EnumValue, O
     public boolean isValid(Object value) {
         // 只允许是Number 或者 String类型
         if(!(value instanceof Number || value instanceof String)) {
-            return false;
+            throw new IllegalArgumentException("value :" + value + "只允许Number或者String类型");
         }
         List<String> enumValues = Arrays.stream(targetEnum.getEnumConstants()).map(item -> {
             // 调用toString()方法
