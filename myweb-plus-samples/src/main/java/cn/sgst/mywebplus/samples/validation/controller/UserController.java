@@ -2,14 +2,17 @@ package cn.sgst.mywebplus.samples.validation.controller;
 
 import cn.sgst.mywebplus.core.api.ApiResult;
 import cn.sgst.mywebplus.core.validation.group.Add;
+import cn.sgst.mywebplus.samples.validation.Inf;
 import cn.sgst.mywebplus.samples.validation.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.groups.Default;
 
 /**
@@ -31,6 +34,12 @@ public class UserController {
     @PostMapping(value = "/save")
     public ApiResult<Void> saveUser(@RequestBody @Validated({Add.class,Default.class}) User user) {
         log.info("user",user);
+        return ApiResult.success();
+    }
+
+    @PostMapping(value = "/validate")
+    public ApiResult<Void> validate(@Valid Inf inf, BindingResult bindingResult) {
+        System.out.println(inf);
         return ApiResult.success();
     }
 }
