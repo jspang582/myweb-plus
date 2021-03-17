@@ -1,9 +1,9 @@
 package cn.sgst.mywebplus.core.validation.constraintvalidators;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.sgst.mywebplus.core.enums.IEnum;
 import cn.sgst.mywebplus.core.validation.constraints.EnumValue;
-import org.springframework.util.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +45,8 @@ public class EnumValueValidator extends AbstractEmptyBasedValidator<EnumValue, O
             return enumValues.contains(value.toString());
         }
         // 允许多值
-        List<String> values = Arrays.asList(StringUtils.split(value.toString(), separator));
+        List<String> values = Arrays.asList(StrUtil.split(value.toString(), separator));
         return CollUtil.containsAll(enumValues, values);
     }
+
 }
