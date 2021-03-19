@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * @author fli
  * @date 2020/4/8 11:38
  */
+@Deprecated
 public class PhoneValidator extends AbstractEmptyBasedValidator<Phone,String> {
 
     @Override

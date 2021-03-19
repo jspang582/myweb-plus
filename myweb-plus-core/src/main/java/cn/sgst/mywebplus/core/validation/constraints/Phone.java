@@ -1,9 +1,14 @@
 package cn.sgst.mywebplus.core.validation.constraints;
 
-import cn.sgst.mywebplus.core.validation.constraintvalidators.PhoneValidator;
+import cn.sgst.mywebplus.core.validation.ValidationRegex;
+import org.hibernate.validator.constraints.CompositionType;
+import org.hibernate.validator.constraints.ConstraintComposition;
 
 import javax.validation.Constraint;
+import javax.validation.OverridesAttribute;
 import javax.validation.Payload;
+import javax.validation.ReportAsSingleViolation;
+import javax.validation.constraints.Pattern;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -24,7 +29,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Repeatable(Phone.List.class)
 @Documented
-@Constraint(validatedBy = PhoneValidator.class)
+@Constraint(validatedBy = { })
+@ReportAsSingleViolation
+@ConstraintComposition(CompositionType.OR)
+@Empty
+@Pattern(regexp = "")
 public @interface Phone {
 
     String message() default "{cn.sgst.mywebplus.core.validation.constraints.Phone.message}";
@@ -32,6 +41,16 @@ public @interface Phone {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    /**
+     * @return an additional regular expression the annotated string must match.
+     */
+    @OverridesAttribute(constraint = Pattern.class, name = "regexp") String regexp() default ValidationRegex.PHONE_REGEX;
+
+    /**
+     * @return used in combination with {@link #regexp()} in order to specify a regular expression option
+     */
+    @OverridesAttribute(constraint = Pattern.class, name = "flags") Pattern.Flag[] flags() default { };
 
     /**
      * Defines several {@link Phone} constraints on the same element.
