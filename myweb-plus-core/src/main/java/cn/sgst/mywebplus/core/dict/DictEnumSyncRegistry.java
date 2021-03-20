@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
+ * 字典同步枚举注册器
+ *
  * @author: fli
  * @email: fli@sstir.cn
  * @date: 2021/3/20 14:13
@@ -25,6 +27,9 @@ public class DictEnumSyncRegistry implements Serializable {
      */
     private transient static DictEnumSyncProcessor globalSyncProcessor;
 
+    /**
+     * 同步器集合
+     */
     private List<DictEnumSynchronizer> synchronizers = new ArrayList<>();
 
     static {
@@ -34,14 +39,15 @@ public class DictEnumSyncRegistry implements Serializable {
             DictEnumSyncRegistry.globalSyncProcessor = syncProcessor;
             break;
         }
-        if(globalSyncProcessor == null) {
-            log.info("cannot find spi GlobalSyncProcessor");
-        }else {
+        if (globalSyncProcessor == null) {
+            log.info("Cannot find spi GlobalSyncProcessor");
+        } else {
             log.info("find spi GlobalSyncProcessor :" + globalSyncProcessor.getClass().getName());
         }
     }
 
     /**
+     * 单例对象持有者
      */
     private static class SingletonHolder {
         /**
@@ -62,52 +68,85 @@ public class DictEnumSyncRegistry implements Serializable {
     /**
      * 私有构造方法,保证单例
      */
-    private DictEnumSyncRegistry() {}
-
-    public DictEnumSyncRegistry register(String dictType, Class<? extends Enum<?>> enumType,DictEnumSyncProcessor syncProcessor) {
-        Assert.isTrue(StrUtil.isNotBlank(dictType),"dictType must not be blank");
-        Assert.notNull(enumType,"enumType must not be null");
-        Assert.notNull(syncProcessor,"syncProcessor must not be null");
-        DictEnumSynchronizer synchronizer = new DictEnumSynchronizer(dictType, enumType, syncProcessor);
-        synchronizers.add(synchronizer);
-        return this;
+    private DictEnumSyncRegistry() {
     }
 
-    public DictEnumSyncRegistry register(String dictType,Class<? extends Enum<?>> enumType) {
-        Assert.isTrue(StrUtil.isNotBlank(dictType),"dictType must not be blank");
-        Assert.notNull(enumType,"enumType must not be null");
-        if(globalSyncProcessor != null) {
-            DictEnumSynchronizer synchronizer = new DictEnumSynchronizer(dictType, enumType, globalSyncProcessor);
+
+    /**
+     * 注册同步器
+     *
+     * @param dictType      数据字典类型
+     * @param enumType      枚举类型
+     * @param syncProcessor 同步处理器
+     * @return this
+     */
+    public DictEnumSyncRegistry register(String dictType, Class<? extends Enum<?>> enumType, DictEnumSyncProcessor syncProcessor) {
+        Assert.isTrue(StrUtil.isNotBlank(dictType), "dictType must not be blank");
+        Assert.notNull(enumType, "enumType must not be null");
+        Assert.notNull(syncProcessor, "syncProcessor must not be null");
+        if (getSynchronizer(dictType) == null) {
+            DictEnumSynchronizer synchronizer = new DictEnumSynchronizer(dictType, enumType, syncProcessor);
             synchronizers.add(synchronizer);
         }
         return this;
     }
 
+
+    /**
+     * 注册同步器,使用spi同步处理器
+     *
+     * @param dictType 数据字典类型
+     * @param enumType 枚举类
+     * @return this 同步处理器
+     */
+    public DictEnumSyncRegistry register(String dictType, Class<? extends Enum<?>> enumType) {
+        if (globalSyncProcessor != null) {
+            register(dictType, enumType, globalSyncProcessor);
+        } else {
+            log.warn("Cannot find spi GlobalSyncProcessor,Please check");
+        }
+        return this;
+    }
+
+    /**
+     * 获取同步器
+     *
+     * @param dictType 数据字典类型
+     * @return 同步器
+     */
     public DictEnumSynchronizer getSynchronizer(String dictType) {
-        return synchronizers.stream().filter(synchronizer -> Objects.equals(synchronizer.getDictType(),dictType)).findFirst().orElse(null);
+        return synchronizers.stream().filter(synchronizer -> Objects.equals(synchronizer.getDictType(), dictType)).findFirst().orElse(null);
     }
 
 
-
+    /**
+     * 执行同步处理器
+     *
+     * @param dictType 数据字典类型
+     */
     public void sync(String dictType) {
         DictEnumSynchronizer synchronizer = getSynchronizer(dictType);
-        if(synchronizer == null) {
+        if (synchronizer == null) {
             log.info("cannot find synchronizer from dictType :" + dictType);
             return;
         }
         synchronizer.processSync();
     }
 
+
+    /**
+     * 执行全部同步处理器
+     */
     public void syncAll() {
-        if( synchronizers.isEmpty()) {
+        if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
         }
         for (DictEnumSynchronizer synchronizer : synchronizers) {
             try {
                 synchronizer.processSync();
-            }catch (DictEnumSyncException e) {
+            } catch (DictEnumSyncException e) {
                 // 打印错误日志,并继续往后执行
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
         }
     }
