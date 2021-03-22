@@ -131,7 +131,7 @@ public class DictEnumSyncRegistry implements Serializable {
             log.info("cannot find synchronizer from dictType :" + dictType);
             return;
         }
-        List<DictDetails> dictData = null;
+        Collection<DictDetails> dictData = null;
         if (provider != null) {
             try {
                 dictData = provider.loadDictsByDictType(dictType);
@@ -150,7 +150,7 @@ public class DictEnumSyncRegistry implements Serializable {
         if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
         }
-        List<DictDetails> dictData = null;
+        Collection<DictDetails> dictData = null;
         if (provider != null) {
             try {
                 dictData = provider.loadAllDicts();

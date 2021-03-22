@@ -1,6 +1,6 @@
 package cn.sgst.mywebplus.core.dict;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 字典数据提供者
@@ -14,17 +14,19 @@ public interface DictDetailsProvider {
 
     /**
      * 根据字典类型加载字典数据
+     *
      * @param dictType 字典类型
      * @return 字典集合
      * @throws LoadDictDetailsException 获取字典异常
      */
-    List<DictDetails> loadDictsByDictType(String dictType) throws LoadDictDetailsException;
+     Collection<DictDetails> loadDictsByDictType(String dictType) throws LoadDictDetailsException;
 
 
     /**
      * 加载所有字典数据
+     *
      * @return 字典集合
      * @throws LoadDictDetailsException 获取字典异常
      */
-    List<DictDetails> loadAllDicts() throws LoadDictDetailsException;
+     Collection<DictDetails> loadAllDicts() throws LoadDictDetailsException;
 }

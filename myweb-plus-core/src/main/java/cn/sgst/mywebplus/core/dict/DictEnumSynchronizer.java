@@ -8,7 +8,6 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 数据字典同步枚举同步器
@@ -37,10 +36,10 @@ public class DictEnumSynchronizer implements Serializable {
     private transient final DictEnumSyncProcessor syncProcessor;
 
 
-    public DictEnumSynchronizer(String dictType, Class<? extends Enum<?>> enumType,DictEnumSyncProcessor syncProcessor ) {
-        Assert.isTrue(StrUtil.isNotBlank(dictType),"dictType must not be blank");
-        Assert.notNull(enumType,"enumType must not be null");
-        Assert.notNull(syncProcessor,"syncProcessor must not be null");
+    public DictEnumSynchronizer(String dictType, Class<? extends Enum<?>> enumType, DictEnumSyncProcessor syncProcessor) {
+        Assert.isTrue(StrUtil.isNotBlank(dictType), "dictType must not be blank");
+        Assert.notNull(enumType, "enumType must not be null");
+        Assert.notNull(syncProcessor, "syncProcessor must not be null");
         this.dictType = dictType;
         this.enumType = enumType;
         this.syncProcessor = syncProcessor;
@@ -49,16 +48,19 @@ public class DictEnumSynchronizer implements Serializable {
 
     /**
      * 处理同步
+     *
      * @param dictData 字典数据
      */
-    public void processSync(@Nullable Collection<DictDetails> dictData) throws DictEnumSyncException{
-        if(dictData == null) {
+    public void processSync(@Nullable Collection<DictDetails> dictData) throws DictEnumSyncException {
+        if (dictData == null) {
             dictData = new ArrayList<>();
         }
+        // 过滤掉空值
+        dictData.removeIf(dict -> StrUtil.isBlank(dict.getDictValue()) || StrUtil.isBlank(dict.getDictText()));
         try {
-            syncProcessor.processSync(dictType,dictData,enumType);
-        }catch (Exception e) {
-            throw new DictEnumSyncException(dictType,enumType,e);
+            syncProcessor.processSync(dictType, dictData, enumType);
+        } catch (Exception e) {
+            throw new DictEnumSyncException(dictType, enumType, e);
         }
     }
 

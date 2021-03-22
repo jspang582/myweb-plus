@@ -21,7 +21,9 @@ public class Main {
 
     @BeforeAll
     static void register() {
-        registry.register("sex_type",EnumFactory.SexEnum.class)
+        registry
+                .setProvider(new DefaultDictDetailsProvider())
+                .register("sex_type",EnumFactory.SexEnum.class)
                 .register("del_type",EnumFactory.StatusEnum.class,new DelEnumSyncProcessor());
     }
 

@@ -1,6 +1,8 @@
 package cn.sgst.mywebplus.core.dict;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -12,6 +14,8 @@ import java.io.Serializable;
  * @date: 2020/8/25 15:09
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dict<K,V> implements Serializable {
 
     /**
@@ -24,11 +28,4 @@ public class Dict<K,V> implements Serializable {
      */
     private V text;
 
-    public Dict() {
-    }
-
-    public Dict(K value, V text) {
-        this.value = value;
-        this.text = text;
-    }
 }
