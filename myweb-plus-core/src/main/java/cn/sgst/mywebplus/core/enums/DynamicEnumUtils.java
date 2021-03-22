@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core.enums;
 
+import cn.hutool.core.util.EnumUtil;
 import sun.reflect.ConstructorAccessor;
 import sun.reflect.FieldAccessor;
 import sun.reflect.ReflectionFactory;
@@ -19,6 +20,7 @@ import java.util.List;
  * @email: fli@sstir.cn
  * @date: 2021/3/1 17:03
  */
+@SuppressWarnings("all")
 public class DynamicEnumUtils {
 
 
@@ -30,7 +32,7 @@ public class DynamicEnumUtils {
         // 反射访问私有变量
         field.setAccessible(true);
 
-        /**
+        /*
          * 接下来，我们将字段实例中的修饰符更改为不再是final，
          * 从而使反射允许我们修改静态final字段。
          */
@@ -50,7 +52,7 @@ public class DynamicEnumUtils {
             IllegalAccessException {
         for (Field field : Class.class.getDeclaredFields()) {
             if (field.getName().contains(fieldName)) {
-                AccessibleObject.setAccessible(new Field[] { field }, true);
+                AccessibleObject.setAccessible(new Field[]{field}, true);
                 setFailsafeFieldValue(field, enumClass, null);
                 break;
             }
@@ -58,8 +60,10 @@ public class DynamicEnumUtils {
     }
 
     private static void cleanEnumCache(Class<?> enumClass) throws NoSuchFieldException, IllegalAccessException {
-        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK 1.5/6
-        blankField(enumClass, "enumConstants"); // IBM JDK
+        // Sun (Oracle?!?) JDK 1.5/6
+        blankField(enumClass, "enumConstantDirectory");
+        // IBM JDK
+        blankField(enumClass, "enumConstants");
     }
 
     private static ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
@@ -83,11 +87,11 @@ public class DynamicEnumUtils {
     /**
      * 将枚举实例添加到作为参数提供的枚举类中
      *
-     * @param enumType	要修改的枚举类型
-     * @param enumName	添加的枚举类型名字
-     * @param additionalTypes	枚举类型参数类型列表
-     * @param additionalValues	枚举类型参数值列表
-     * @param <T>
+     * @param enumType         要修改的枚举类型
+     * @param enumName         添加的枚举类型名字
+     * @param additionalTypes  枚举类型参数类型列表
+     * @param additionalValues 枚举类型参数值列表
+     * @param <T>              泛型
      */
     @SuppressWarnings("unchecked")
     public static <T extends Enum<?>> void addEnum(Class<T> enumType, String enumName, Class<?>[] additionalTypes, Object[] additionalValues) {
@@ -106,7 +110,7 @@ public class DynamicEnumUtils {
                 break;
             }
         }
-        AccessibleObject.setAccessible(new Field[] { valuesField }, true);
+        AccessibleObject.setAccessible(new Field[]{valuesField}, true);
 
         try {
             // 2. 将他拷贝到数组
@@ -122,11 +126,142 @@ public class DynamicEnumUtils {
             // 5. 设定拷贝的数组，到枚举类型
             setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
 
-            // 6. 清楚枚举的缓存
+            // 6. 清除枚举的缓存
             cleanEnumCache(enumType);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
+
+    /**
+     * 删除所有的枚举值
+     *
+     * @param enumType 要修改的枚举类型
+     * @param <T>      泛型
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Enum<?>> void delAllEnum(Class<T> enumType) {
+        // 0. 检查类型
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new RuntimeException("class " + enumType + " is not an instance of Enum");
+        }
+
+        // 1. 在枚举类中查找“$values”持有者并获取以前的枚举实例
+        Field valuesField = null;
+        Field[] fields = enumType.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().contains("$VALUES")) {
+                valuesField = field;
+                break;
+            }
+        }
+        AccessibleObject.setAccessible(new Field[]{valuesField}, true);
+        try {
+            List<T> values = new ArrayList<T>();
+            setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
+            // 2.清除枚举的缓存
+            cleanEnumCache(enumType);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 删除枚举值
+     *
+     * @param enumType 枚举类型
+     * @param enumName 删除的枚举类型名字
+     * @param <T>      泛型
+     */
+    public static <T extends Enum<?>> void delEnum(Class<T> enumType, String enumName) {
+        // 0. 检查类型
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new RuntimeException("class " + enumType + " is not an instance of Enum");
+        }
+        // 判断是否有该枚举名,如果没有则直接返回
+        List<String> names = EnumUtil.getNames(enumType);
+        if (!names.contains(enumName)) {
+            return;
+        }
+        // 1. 在枚举类中查找“$values”持有者并获取以前的枚举实例
+        Field valuesField = null;
+        Field[] fields = enumType.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().contains("$VALUES")) {
+                valuesField = field;
+                break;
+            }
+        }
+        AccessibleObject.setAccessible(new Field[]{valuesField}, true);
+
+        try {
+            // 2. 将他拷贝到数组
+            T[] previousValues = (T[]) valuesField.get(enumType);
+            List<T> values = new ArrayList<T>(Arrays.asList(previousValues));
+            // 3. 移除指定的枚举值
+            values.removeIf(value -> value.name().equals(enumName));
+            // 4. 设定拷贝的数组，到枚举类型
+            setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
+            // 5. 清除枚举的缓存
+            cleanEnumCache(enumType);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+
+    /**
+     * 更新枚举值
+     *
+     * @param enumType         枚举类型
+     * @param enumName         更新的枚举类型名字
+     * @param additionalTypes  枚举类型参数类型列表
+     * @param additionalValues 枚举类型参数值列表
+     * @param <T>              泛型
+     */
+    public static <T extends Enum<?>> void updateEnum(Class<T> enumType, String enumName, Class<?>[] additionalTypes, Object[] additionalValues) {
+        // 0. 检查类型
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new RuntimeException("class " + enumType + " is not an instance of Enum");
+        }
+        // 判断是否有该枚举名,如果没有则直接返回
+        List<String> names = EnumUtil.getNames(enumType);
+        if (!names.contains(enumName)) {
+            return;
+        }
+        // 先删除
+        delEnum(enumType, enumName);
+
+        // 1. 在枚举类中查找“$values”持有者并获取以前的枚举实例
+        Field valuesField = null;
+        Field[] fields = enumType.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().contains("$VALUES")) {
+                valuesField = field;
+                break;
+            }
+        }
+        AccessibleObject.setAccessible(new Field[]{valuesField}, true);
+
+        try {
+            // 2. 将他拷贝到数组
+            T[] previousValues = (T[]) valuesField.get(enumType);
+            List<T> values = new ArrayList<T>(Arrays.asList(previousValues));
+
+            // 3. 再创建新的枚举项
+            T newValue = (T) makeEnum(enumType, enumName, values.size(), additionalTypes, additionalValues);
+
+            // 4. 添加新的枚举项
+            values.add(names.indexOf(enumName),newValue);
+
+            // 5. 设定拷贝的数组，到枚举类型
+            setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
+
+            // 6. 清除枚举的缓存
+            cleanEnumCache(enumType);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 }
