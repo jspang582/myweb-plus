@@ -125,7 +125,7 @@ public class DictEnumSyncRegistry implements Serializable {
      *
      * @param dictType 数据字典类型
      */
-    public void sync(String dictType) {
+    public synchronized void sync(String dictType) {
         DictEnumSynchronizer synchronizer = getSynchronizer(dictType);
         if (synchronizer == null) {
             log.info("cannot find synchronizer from dictType :" + dictType);
@@ -146,7 +146,7 @@ public class DictEnumSyncRegistry implements Serializable {
     /**
      * 执行全部同步处理器
      */
-    public void syncAll() {
+    public synchronized void syncAll() {
         if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
         }
