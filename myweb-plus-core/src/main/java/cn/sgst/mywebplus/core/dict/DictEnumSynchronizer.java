@@ -2,9 +2,13 @@ package cn.sgst.mywebplus.core.dict;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 数据字典同步枚举同步器
@@ -45,10 +49,14 @@ public class DictEnumSynchronizer implements Serializable {
 
     /**
      * 处理同步
+     * @param dictData 字典数据
      */
-    public void processSync() {
+    public void processSync(@Nullable Collection<DictDetails> dictData) throws DictEnumSyncException{
+        if(dictData == null) {
+            dictData = new ArrayList<>();
+        }
         try {
-            syncProcessor.processSync(dictType,enumType);
+            syncProcessor.processSync(dictType,dictData,enumType);
         }catch (Exception e) {
             throw new DictEnumSyncException(dictType,enumType,e);
         }

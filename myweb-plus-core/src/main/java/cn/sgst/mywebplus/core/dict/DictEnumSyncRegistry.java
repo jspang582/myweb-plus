@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * 字典同步枚举注册器
@@ -25,26 +22,17 @@ public class DictEnumSyncRegistry implements Serializable {
     /**
      * spi必须保证线程安全
      */
-    private transient static DictEnumSyncProcessor globalSyncProcessor;
+    private transient DictEnumSyncProcessor globalSyncProcessor;
+
+    /**
+     * 字典数据提供者
+     */
+    private transient DictDetailsProvider provider;
 
     /**
      * 同步器集合
      */
     private List<DictEnumSynchronizer> synchronizers = new ArrayList<>();
-
-    static {
-        ServiceLoader<DictEnumSyncProcessor> serviceLoader = ServiceLoader.load(DictEnumSyncProcessor.class);
-        for (DictEnumSyncProcessor syncProcessor : serviceLoader) {
-            // 取第一个
-            DictEnumSyncRegistry.globalSyncProcessor = syncProcessor;
-            break;
-        }
-        if (globalSyncProcessor == null) {
-            log.info("Cannot find spi GlobalSyncProcessor");
-        } else {
-            log.info("find spi GlobalSyncProcessor :" + globalSyncProcessor.getClass().getName());
-        }
-    }
 
     /**
      * 单例对象持有者
@@ -69,8 +57,21 @@ public class DictEnumSyncRegistry implements Serializable {
      * 私有构造方法,保证单例
      */
     private DictEnumSyncRegistry() {
+        putSpiSyncProcessor();
     }
 
+
+    /**
+     * 设置字典数据提供者
+     * 只要
+     *
+     * @param provider 提供者
+     * @return this
+     */
+    public DictEnumSyncRegistry setProvider(DictDetailsProvider provider) {
+        this.provider = provider;
+        return this;
+    }
 
     /**
      * 注册同步器
@@ -130,7 +131,15 @@ public class DictEnumSyncRegistry implements Serializable {
             log.info("cannot find synchronizer from dictType :" + dictType);
             return;
         }
-        synchronizer.processSync();
+        List<DictDetails> dictData = null;
+        if (provider != null) {
+            try {
+                dictData = provider.loadDictsByDictType(dictType);
+            } catch (Exception e) {
+                throw new LoadDictDetailsException("Failed to load dictData of dictType :" + dictType, e);
+            }
+        }
+        synchronizer.processSync(dictData);
     }
 
 
@@ -141,13 +150,41 @@ public class DictEnumSyncRegistry implements Serializable {
         if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
         }
-        for (DictEnumSynchronizer synchronizer : synchronizers) {
+        List<DictDetails> dictData = null;
+        if (provider != null) {
             try {
-                synchronizer.processSync();
+                dictData = provider.loadAllDicts();
+            } catch (Exception e) {
+                throw new LoadDictDetailsException("Failed to load dictData", e);
+            }
+
+        }
+        for (DictEnumSynchronizer synchronizer : synchronizers) {
+            if (dictData != null) {
+                dictData.removeIf(dict -> !Objects.equals(dict.getDictType(), synchronizer.getDictType()));
+            }
+            try {
+                synchronizer.processSync(dictData);
             } catch (DictEnumSyncException e) {
                 // 打印错误日志,并继续往后执行
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * 读取Spi SyncProcessor并设置到全局处理器中
+     */
+    private void putSpiSyncProcessor() {
+        ServiceLoader<DictEnumSyncProcessor> serviceLoader = ServiceLoader.load(DictEnumSyncProcessor.class);
+        Iterator<DictEnumSyncProcessor> iterator = serviceLoader.iterator();
+        boolean hasNext = iterator.hasNext();
+        if (!hasNext) {
+            log.info("Cannot find spi GlobalSyncProcessor");
+            return;
+        }
+        // 取第一个
+        this.globalSyncProcessor = iterator.next();
+        log.info("find spi GlobalSyncProcessor :" + globalSyncProcessor.getClass().getName());
     }
 }
