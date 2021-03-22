@@ -1,6 +1,5 @@
 package cn.sgst.mywebplus.core.dict;
 
-import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.sgst.mywebplus.core.enums.DynamicEnumUtils;
 
@@ -36,6 +35,5 @@ public class GenericSyncProcessor implements DictEnumSyncProcessor {
                     new Object[]{dict.getDictValue(), dictText}
             );
         }
-        System.out.println(EnumUtil.getFieldValues(enumType,"text"));
     }
 }
