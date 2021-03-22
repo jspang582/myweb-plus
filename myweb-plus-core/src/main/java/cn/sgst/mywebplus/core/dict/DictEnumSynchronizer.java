@@ -1,6 +1,7 @@
 package cn.sgst.mywebplus.core.dict;
 
 import cn.hutool.core.util.StrUtil;
+import cn.sgst.mywebplus.core.util.ValidateUtil;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -56,7 +57,7 @@ public class DictEnumSynchronizer implements Serializable {
             dictData = new ArrayList<>();
         }
         // 过滤掉空值
-        dictData.removeIf(dict -> StrUtil.isBlank(dict.getDictValue()) || StrUtil.isBlank(dict.getDictText()));
+        dictData.removeIf(dict -> ValidateUtil.isEmpty(dict.getDictValue()) || StrUtil.isBlank(dict.getDictText()));
         try {
             syncProcessor.processSync(dictType, dictData, enumType);
         } catch (Exception e) {

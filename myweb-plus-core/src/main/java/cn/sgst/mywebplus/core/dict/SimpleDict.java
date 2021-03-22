@@ -14,7 +14,7 @@ import lombok.*;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class SimpleDict extends Dict<String, String> implements DictDetails {
+public class SimpleDict extends Dict<Object, String> implements DictDetails {
 
     /**
      * 字典类型
@@ -22,7 +22,7 @@ public class SimpleDict extends Dict<String, String> implements DictDetails {
     private String dictType;
 
 
-    public SimpleDict(String dictType, String value, String text) {
+    public SimpleDict(String dictType, Object value, String text) {
         super(value, text);
         this.dictType = dictType;
     }
@@ -33,9 +33,10 @@ public class SimpleDict extends Dict<String, String> implements DictDetails {
     }
 
     @Override
-    public String getDictValue() {
+    public Object getDictValue() {
         return super.getValue();
     }
+
 
     @Override
     public String getDictText() {

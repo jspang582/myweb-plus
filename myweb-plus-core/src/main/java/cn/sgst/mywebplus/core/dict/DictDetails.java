@@ -20,9 +20,9 @@ public interface DictDetails extends Serializable {
 
     /**
      * 获取字典Value
-     * @return String
+     * @return Object
      */
-    String getDictValue();
+    Object getDictValue();
 
 
     /**
