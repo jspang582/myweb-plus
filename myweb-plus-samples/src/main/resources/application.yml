@@ -5,3 +5,6 @@ myweb-plus:
     show-error-desc: true
     http-status-always200: true
     path: /error
+spring:
+  messages:
+    basename: i18n/messages
