@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import lombok.Data;
 
 import javax.validation.ConstraintViolation;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
