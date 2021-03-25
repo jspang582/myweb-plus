@@ -1,11 +1,15 @@
 package cn.sgst.mywebplus.samples.validation;
 
 import cn.sgst.mywebplus.core.validation.constraints.EnumValue;
+import cn.sgst.mywebplus.core.validation.group.Required;
 import cn.sgst.mywebplus.samples.serialize.HobbyEnum;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.ScriptAssert;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -21,11 +25,15 @@ import java.util.List;
 public class Inf {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(payload = Required.class)
     private Date startDate;
+    @NotNull(payload = Required.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
+    @NotNull(payload = Required.class)
     private Integer age;
 
+    @Size(min = 2)
     private List<
             @EnumValue(target = HobbyEnum.class)
             String
