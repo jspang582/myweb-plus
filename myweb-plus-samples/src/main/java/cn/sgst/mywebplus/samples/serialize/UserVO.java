@@ -1,10 +1,8 @@
 package cn.sgst.mywebplus.samples.serialize;
 
-import cn.sgst.mywebplus.core.serializer.IEnumSerializer;
+import cn.sgst.mywebplus.core.serializer.IEnumClassSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author: fli
@@ -16,6 +14,11 @@ public class UserVO {
 
     private Integer age;
     private String name;
-    @JsonSerialize(using = IEnumSerializer.class)
     private SexEnum sex;
+    @JsonSerialize(using = IEnumClassSerializer.class)
+    private  Class<SexEnum> sexDicts;
+    public UserVO() {
+        sexDicts = SexEnum.class;
+    }
+
 }

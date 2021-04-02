@@ -2,6 +2,7 @@ package cn.sgst.mywebplus.core.api;
 
 import cn.sgst.mywebplus.core.exception.IExceptionEnum;
 import cn.sgst.mywebplus.core.validation.BeanValidationResult;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,7 @@ public class ApiResult<T> {
     /**
      * 错误详情
      */
+    @JsonIgnore
     private String errorDesc;
 
 
