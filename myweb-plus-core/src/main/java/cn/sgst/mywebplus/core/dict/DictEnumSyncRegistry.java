@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 字典同步枚举注册器
@@ -159,12 +160,12 @@ public class DictEnumSyncRegistry implements Serializable {
             }
 
         }
+        dictData = dictData == null ? new ArrayList<>() : dictData;
         for (DictEnumSynchronizer synchronizer : synchronizers) {
-            if (dictData != null) {
-                dictData.removeIf(dict -> !Objects.equals(dict.getDictType(), synchronizer.getDictType()));
-            }
             try {
-                synchronizer.processSync(dictData);
+                synchronizer.processSync(
+                        dictData.stream().filter(dictDetails -> Objects.equals(dictDetails.getDictType(), synchronizer.getDictType())).collect(Collectors.toList())
+                );
             } catch (DictEnumSyncException e) {
                 // 打印错误日志,并继续往后执行
                 log.error(e.getMessage(), e);
