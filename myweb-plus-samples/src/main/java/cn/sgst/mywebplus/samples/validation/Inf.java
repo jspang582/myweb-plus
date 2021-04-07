@@ -7,7 +7,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.ScriptAssert;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -22,6 +21,7 @@ import java.util.List;
  */
 @Data
 @ScriptAssert(lang = "javascript",reportOn = "endDate",script = "_this.checkParams(_this.startDate,_this.endDate)",message = "开始时间必须小于终止时间")
+@ScriptAssert(lang = "javascript",reportOn = "nested.endDate",script = "_this.checkParams(_this.nested.startDate,_this.nested.endDate)",message = "开始时间必须小于终止时间2")
 public class Inf {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -32,6 +32,8 @@ public class Inf {
     private Date endDate;
     @NotNull(payload = Required.class)
     private Integer age;
+   // @Valid
+    private Nested nested;
 
     @Size(min = 2)
     private List<
