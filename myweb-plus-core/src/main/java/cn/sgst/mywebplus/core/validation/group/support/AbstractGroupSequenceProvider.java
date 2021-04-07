@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core.validation.group.support;
 
+import cn.hutool.core.util.TypeUtil;
 import cn.sgst.mywebplus.core.SpringContextHolder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,8 @@ public abstract class AbstractGroupSequenceProvider<T> implements DefaultGroupSe
     @Override
     public final List<Class<?>> getValidationGroups(T object) {
         Set<Class<?>> defaultGroupSequence = new HashSet<>();
-        Class<?> tClass = getTClass();
+        // 获取泛型的真实类型
+        Class<?> tClass = (Class<?>) TypeUtil.getTypeArgument(getClass());
         defaultGroupSequence.add(tClass);
         if (object != null) {
             // 方法可能会执行多次,只执行一次
@@ -46,15 +48,6 @@ public abstract class AbstractGroupSequenceProvider<T> implements DefaultGroupSe
     protected abstract void doSetValidationGroups(T object, Set<Class<?>> groupSequence);
 
 
-    /**
-     * 获取泛型的Class类型
-     */
-    private Class<?> getTClass() {
-        //返回表示此 Class 所表示的实体（类、接口、基本类型或 void）的直接超类的 Type。
-        ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
-        //返回表示此类型实际类型参数的 Type 对象的数组()，想要获取第2个泛型的Class，所以索引写0
-        return (Class) type.getActualTypeArguments()[0];
-    }
 
     /**
      * 存放Request作用域变量
