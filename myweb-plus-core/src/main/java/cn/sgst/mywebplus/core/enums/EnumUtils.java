@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core.enums;
 
+import cn.hutool.core.convert.Convert;
 import cn.sgst.mywebplus.core.dict.Dict;
 
 import java.util.ArrayList;
@@ -110,6 +111,25 @@ public class EnumUtils {
         return null;
     }
 
+    /**
+     * 根据value模糊获取对应的枚举对象
+     * 支持类型转换器
+     *
+     * @param value value值
+     * @return 枚举对象
+     */
+    public static <T extends IEnum> T fromValueFuzzy(Class<T> clazz, Object value) {
+        assertEnum(clazz);
+        List<T> enumConstants = getEnumConstants(clazz);
+        for (T e : enumConstants) {
+            if (Objects.equals(Convert.toStr(e.getValue()), Convert.toStr(value))) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+
 
     /**
      * 根据text获取对应的枚举对象
@@ -128,6 +148,25 @@ public class EnumUtils {
         return null;
     }
 
+
+    /**
+     * 根据text模糊获取对应的枚举对象
+     * 支持类型转换器
+     *
+     * @param text text值
+     * @return 枚举对象
+     */
+    public static <T extends IEnum> T fromTextFuzzy(Class<T> clazz, Object text) {
+        assertEnum(clazz);
+        List<T> enumConstants = getEnumConstants(clazz);
+        for (T e : enumConstants) {
+            if (Objects.equals(Convert.toStr(e.getText()),Convert.toStr(text))) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     /**
      * 根据value获取对应的text
      *
@@ -139,6 +178,19 @@ public class EnumUtils {
         return e == null ? null : e.getText();
     }
 
+    /**
+     * 根据value模糊获取对应的text
+     * 支持类型转换器
+     *
+     * @param value value值
+     * @return 对应的text
+     */
+    public static <K, V,T extends IEnum<K,V>> V getTextFromValueFuzzy(Class<T> clazz, Object value) {
+        IEnum<K, V> e = fromValueFuzzy(clazz, value);
+        return e == null ? null : e.getText();
+    }
+
+
 
     /**
      * 根据text获取对应的value
@@ -148,6 +200,19 @@ public class EnumUtils {
      */
     public static <K, V,T extends IEnum<K,V>> K getValueFromText(Class<T> clazz, V text) {
         IEnum<K, V> e = fromText(clazz, text);
+        return e == null ? null : e.getValue();
+    }
+
+
+    /**
+     * 根据text模糊获取对应的value
+     * 支持类型转换器
+     *
+     * @param text text值
+     * @return 对应的value值
+     */
+    public static <K, V,T extends IEnum<K,V>> K getValueFromTextFuzzy(Class<T> clazz, Object text) {
+        IEnum<K, V> e = fromTextFuzzy(clazz, text);
         return e == null ? null : e.getValue();
     }
 

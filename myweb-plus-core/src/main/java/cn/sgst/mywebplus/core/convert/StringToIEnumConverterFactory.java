@@ -2,11 +2,11 @@ package cn.sgst.mywebplus.core.convert;
 
 
 import cn.hutool.core.util.StrUtil;
+import cn.sgst.mywebplus.core.enums.EnumUtils;
 import cn.sgst.mywebplus.core.enums.IEnum;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
-import java.util.Objects;
 
 /**
  * 字符串转IEnum类型转换工厂
@@ -37,19 +37,8 @@ public class StringToIEnumConverterFactory implements ConverterFactory<String, I
             if (StrUtil.isEmpty(source)) {
                 return null;
             }
-            return getIEnum(enumType, source);
+            return EnumUtils.fromValueFuzzy(enumType, source);
         }
     }
 
-
-    private static <T extends IEnum> T getIEnum(Class<T> targetType, String source) {
-        T[] enumConstants = targetType.getEnumConstants();
-        for (T enumObj : enumConstants) {
-            // V泛型转toString判断相等,比如 Integer 1 = String 1
-            if (Objects.equals(source, enumObj.getValue().toString())) {
-                return enumObj;
-            }
-        }
-        return null;
-    }
 }
