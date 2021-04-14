@@ -1,8 +1,13 @@
 package cn.sgst.mywebplus.samples.enumsync;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.convert.Converter;
+import cn.hutool.core.convert.ConverterRegistry;
+import cn.sgst.mywebplus.core.convert.HutoolStringConverter;
 import cn.sgst.mywebplus.core.dict.DictEnumSyncRegistry;
 import cn.sgst.mywebplus.core.enums.DynamicEnumUtils;
 import cn.sgst.mywebplus.core.enums.EnumUtils;
+import cn.sgst.mywebplus.core.enums.IEnum;
 import cn.sgst.mywebplus.samples.serialize.HobbyEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,6 +36,10 @@ public class Main {
     @Test
     void syncSingle() {
         registry.sync("sex_type");
+        ConverterRegistry instance = ConverterRegistry.getInstance();
+        instance.putCustom(String.class,new HutoolStringConverter());
+        String s = Convert.toStr(HobbyEnum.SING);
+        System.out.println(s);
     }
 
     @Test

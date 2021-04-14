@@ -34,6 +34,8 @@ public class Inf {
     private Integer age;
    // @Valid
     private Nested nested;
+    @EnumValue(target = HobbyEnum.class,multiAllowed = true)
+    private String hobby = "1,2,5";
 
     @Size(min = 2)
     private List<
