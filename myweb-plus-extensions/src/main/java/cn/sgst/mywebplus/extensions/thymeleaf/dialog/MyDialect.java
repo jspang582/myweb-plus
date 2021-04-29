@@ -16,8 +16,10 @@ public class MyDialect extends AbstractDialect implements IExpressionObjectDiale
 
     private final IExpressionObjectFactory MY_EXPRESSION_OBJECTS_FACTORY = new MyDialectExpressionFactory();
 
+    private static final String NAME = "mydialect";
+
     public MyDialect() {
-        super("mydialect");
+        super(NAME);
     }
 
     @Override
