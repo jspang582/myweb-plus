@@ -23,7 +23,7 @@ public class MywebPlusFeignExceptionHandler {
     public String handleSgstFeignException(HttpServletRequest req, FeignException ex) {
         log.error("远程调用服务出错",ex);
         req.setAttribute(RequestDispatcher.ERROR_STATUS_CODE,ex.status());
-        req.setAttribute(RequestDispatcher.ERROR_MESSAGE,ex.getMessage());
+        req.setAttribute("mywebplus.servlet.error.message",ex.getMessage());
         return "forward:/error";
     }
 }
