@@ -118,20 +118,26 @@ public class MywebPlusErrorAttributes extends DefaultErrorAttributes {
             Throwable error = getError(webRequest);
             errorAttributes.put("message", ((ServiceException) error).getErrorMessage());
         } else {
-            Integer status = getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE);
-            if (status == null) {
-                errorAttributes.put("message", "None");
-            } else {
-                try {
-                    String describeMessage = errorMessageHandler.describeErrorStatus(status);
-                    if (StrUtil.isNotBlank(describeMessage)) {
-                        errorAttributes.put("message", describeMessage);
-                    } else {
-                        errorAttributes.put("message", HttpStatus.valueOf(status).getReasonPhrase());
+            // 自定义传输过来的message
+            String message = getAttribute(webRequest, "mywebplus.servlet.error.message");
+            if(!StringUtils.isEmpty(message)) {
+                errorAttributes.put("message", message);
+            }else {
+                Integer status = getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE);
+                if (status == null) {
+                    errorAttributes.put("message", "None");
+                } else {
+                    try {
+                        String describeMessage = errorMessageHandler.describeErrorStatus(status);
+                        if (StrUtil.isNotBlank(describeMessage)) {
+                            errorAttributes.put("message", describeMessage);
+                        } else {
+                            errorAttributes.put("message", HttpStatus.valueOf(status).getReasonPhrase());
+                        }
+                    } catch (Exception ex) {
+                        // 获取错误原因失败
+                        errorAttributes.put("message", "Http Status " + status);
                     }
-                } catch (Exception ex) {
-                    // 获取错误原因失败
-                    errorAttributes.put("message", "Http Status " + status);
                 }
             }
         }
