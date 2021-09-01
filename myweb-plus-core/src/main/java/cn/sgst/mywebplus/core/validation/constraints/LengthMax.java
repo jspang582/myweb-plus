@@ -32,7 +32,7 @@ import static java.lang.annotation.ElementType.*;
 public @interface LengthMax {
 
     @OverridesAttribute(constraint = Length.class, name = "max")
-    int value() default Integer.MAX_VALUE;
+    int value() default java.lang.Integer.MAX_VALUE;
 
 
     Class<?>[] groups() default {};

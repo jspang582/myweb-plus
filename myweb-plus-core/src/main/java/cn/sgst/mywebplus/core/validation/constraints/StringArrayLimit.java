@@ -42,7 +42,7 @@ public @interface StringArrayLimit {
     /**
      * 元素个数最大值
      */
-    int max() default Integer.MAX_VALUE;
+    int max() default java.lang.Integer.MAX_VALUE;
 
     /**
      * 元素分割符
