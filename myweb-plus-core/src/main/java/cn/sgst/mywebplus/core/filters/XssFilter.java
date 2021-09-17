@@ -9,6 +9,8 @@ import org.springframework.util.AntPathMatcher;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * XSS过滤器
@@ -24,6 +26,9 @@ public class XssFilter implements Filter {
     @Setter
     @Getter
     private String[] excludeUrlPatterns = {};
+    @Setter
+    @Getter
+    private Map<String,Object> conf = new HashMap<>();
 
 
     @Override
@@ -34,7 +39,7 @@ public class XssFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (shouldFilter((HttpServletRequest) request)) {
-            HTMLFilter htmlFilter = new HTMLFilter();
+            HTMLFilter htmlFilter = new HTMLFilter(conf);
             chain.doFilter(new XssFilterRequestWrapper((HttpServletRequest) request, htmlFilter), response);
         } else {
             chain.doFilter(request, response);
