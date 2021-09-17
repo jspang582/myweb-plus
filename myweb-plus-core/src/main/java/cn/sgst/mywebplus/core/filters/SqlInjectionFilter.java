@@ -20,8 +20,10 @@ import java.io.IOException;
  * @date: 2020/8/10 9:54
  */
 @Slf4j
-public class SqlInjectionFilter implements Filter {
+public class SqlInjectionFilter extends AntPathMatcherSupport implements Filter {
 
+    @Getter
+    private FilterConfig filterConfig;
     /**
      * 请求方式
      */
@@ -29,17 +31,33 @@ public class SqlInjectionFilter implements Filter {
     @Setter
     private String[] methods;
 
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
 
-        String method = req.getMethod();
-        if (ArrayUtil.containsIgnoreCase(methods, method)) {
-            SqlInjectionFilterRequestWrapper sqlInjectionRequestWrapper = new SqlInjectionFilterRequestWrapper(req);
-            chain.doFilter(sqlInjectionRequestWrapper, response);
+        if (shouldFilter(req)) {
+            String method = req.getMethod();
+            if (ArrayUtil.containsIgnoreCase(methods, method)) {
+                SqlInjectionFilterRequestWrapper sqlInjectionRequestWrapper = new SqlInjectionFilterRequestWrapper(req);
+                chain.doFilter(sqlInjectionRequestWrapper, response);
+            } else {
+                chain.doFilter(req, response);
+            }
+
         } else {
             chain.doFilter(req, response);
         }
-
     }
+
+    @Override
+    public void destroy() {
+        filterConfig = null;
+    }
+
 }

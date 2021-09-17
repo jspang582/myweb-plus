@@ -21,12 +21,16 @@ public class TrimFilterRegistrar implements ImportBeanDefinitionRegistrar {
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableTrimFilter.class.getName()));
 
+        String[] includeUrlPatterns = attributes.getStringArray("includeUrlPatterns");
+        String[] excludeUrlPatterns = attributes.getStringArray("excludeUrlPatterns");
+
         Number order = attributes.getNumber("order");
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(FilterRegistrationFactoryBean.class);
         ParameterFilter filter = new ParameterFilter();
+        filter.setExcludeUrlPatterns(excludeUrlPatterns);
         builder.addConstructorArgValue(filter);
-        builder.addPropertyValue("urlPatterns", "/*");
+        builder.addPropertyValue("urlPatterns", includeUrlPatterns);
         builder.addPropertyValue("order", order.intValue());
 
         registry.registerBeanDefinition(Introspector.decapitalize(ParameterFilter.class.getSimpleName()), builder.getBeanDefinition());

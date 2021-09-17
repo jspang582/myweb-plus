@@ -19,6 +19,16 @@ import java.lang.annotation.*;
 public @interface EnableTrimFilter {
 
     /**
+     * 需要拦截的请求,支持通配符
+     */
+    String[] includeUrlPatterns() default {"/*"};
+
+    /**
+     * 不需要拦截的请求,支持通配符
+     */
+    String[] excludeUrlPatterns() default {};
+
+    /**
      * 排序
      */
     int order() default Ordered.HIGHEST_PRECEDENCE;

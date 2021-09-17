@@ -19,6 +19,16 @@ import java.lang.annotation.*;
 public @interface EnableSqlInjectionFilter {
 
     /**
+     * 需要拦截的请求,支持通配符
+     */
+    String[] includeUrlPatterns() default {"/*"};
+
+    /**
+     * 不需要拦截的请求,支持通配符
+     */
+    String[] excludeUrlPatterns() default {};
+
+    /**
      * 请求方式
      */
     String[] methods() default {"GET"};

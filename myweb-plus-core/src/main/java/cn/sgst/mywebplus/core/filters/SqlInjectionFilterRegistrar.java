@@ -22,16 +22,20 @@ public class SqlInjectionFilterRegistrar implements ImportBeanDefinitionRegistra
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableSqlInjectionFilter.class.getName()));
 
+        String[] includeUrlPatterns = attributes.getStringArray("includeUrlPatterns");
+        String[] excludeUrlPatterns = attributes.getStringArray("excludeUrlPatterns");
         String[] methods = attributes.getStringArray("methods");
         Number order = attributes.getNumber("order");
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(FilterRegistrationFactoryBean.class);
         SqlInjectionFilter filter = new SqlInjectionFilter();
+        filter.setExcludeUrlPatterns(excludeUrlPatterns);
         filter.setMethods(methods);
-        builder.addConstructorArgValue(filter);
-        builder.addPropertyValue("urlPatterns","/*");
-        builder.addPropertyValue("order",order.intValue());
 
-        registry.registerBeanDefinition(Introspector.decapitalize(SqlInjectionFilter.class.getSimpleName()),builder.getBeanDefinition());
+        builder.addConstructorArgValue(filter);
+        builder.addPropertyValue("urlPatterns", includeUrlPatterns);
+        builder.addPropertyValue("order", order.intValue());
+
+        registry.registerBeanDefinition(Introspector.decapitalize(SqlInjectionFilter.class.getSimpleName()), builder.getBeanDefinition());
     }
 }

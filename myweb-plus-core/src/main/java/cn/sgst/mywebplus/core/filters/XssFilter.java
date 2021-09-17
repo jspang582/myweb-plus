@@ -4,7 +4,6 @@ package cn.sgst.mywebplus.core.filters;
 import cn.hutool.http.HTMLFilter;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -19,13 +18,10 @@ import java.util.Map;
  * @email: fli@sstir.cn
  * @date: 2021/9/16 13:56
  */
-public class XssFilter implements Filter {
+public class XssFilter extends AntPathMatcherSupport implements Filter {
 
     @Getter
     private FilterConfig filterConfig;
-    @Setter
-    @Getter
-    private String[] excludeUrlPatterns = {};
     @Setter
     @Getter
     private Map<String,Object> conf = new HashMap<>();
@@ -51,19 +47,4 @@ public class XssFilter implements Filter {
         filterConfig = null;
     }
 
-
-    /**
-     * 是否应该过滤
-     */
-    protected boolean shouldFilter(HttpServletRequest request) {
-        boolean shouldFilter = true;
-        for (String excludeUrlPattern : excludeUrlPatterns) {
-            AntPathMatcher matcher = new AntPathMatcher();
-            if (matcher.match(excludeUrlPattern, request.getRequestURI())) {
-                shouldFilter = false;
-                break;
-            }
-        }
-        return shouldFilter;
-    }
 }
