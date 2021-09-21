@@ -15,7 +15,7 @@ import java.io.IOException;
  * @email: fli@sstir.cn
  * @date: 2020/4/7 9:19
  */
-public class ParameterFilter extends AntPathMatcherSupport implements Filter {
+public class WhitespaceFilter extends AntPathMatcherSupport implements Filter {
 
     @Getter
     private FilterConfig filterConfig;
@@ -30,7 +30,7 @@ public class ParameterFilter extends AntPathMatcherSupport implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (shouldFilter((HttpServletRequest) request)) {
-            chain.doFilter(new ParameterFilterRequestWrapper((HttpServletRequest) (request)), response);
+            chain.doFilter(new FilterRequestWrapper((HttpServletRequest) request, new WhitespaceValueFilter()), response);
         } else {
             chain.doFilter(request, response);
         }

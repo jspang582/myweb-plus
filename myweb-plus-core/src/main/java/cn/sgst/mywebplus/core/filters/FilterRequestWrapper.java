@@ -3,7 +3,7 @@ package cn.sgst.mywebplus.core.filters;
 import cn.hutool.core.io.IoUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.ValueFilter;
+import com.alibaba.fastjson.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,27 +15,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * 请求包装抽象类
+ * 对值进行过滤的请求处理器
  *
  * @author: fli
  * @email: fli@sstir.cn
- * @date: 2021/9/16 14:53
+ * @date: 2021/9/20 0:35
  */
 @Slf4j
-public abstract class AbstractFilterRequestWrapper extends HttpServletRequestWrapper {
+public class FilterRequestWrapper extends HttpServletRequestWrapper {
 
-    private Map<String, String[]> params = new HashMap<>();
+    private final ValueFilter valueFilter;
 
-    public AbstractFilterRequestWrapper(HttpServletRequest request) {
+    public FilterRequestWrapper(HttpServletRequest request, ValueFilter valueFilter) {
         super(request);
-        this.params.putAll(request.getParameterMap());
+        this.valueFilter = valueFilter;
     }
+
 
     /**
      * 重写getInputStream方法  @requestBody类型的请求参数必须通过流才能获取到值
@@ -47,7 +46,7 @@ public abstract class AbstractFilterRequestWrapper extends HttpServletRequestWra
             return super.getInputStream();
         }
         //为空，直接返回
-        String body = IoUtil.read(super.getInputStream(), Charset.forName("utf-8"));
+        String body = IoUtil.read(super.getInputStream(), IOUtils.UTF8);
         if (StringUtils.isEmpty(body)) {
             return super.getInputStream();
         }
@@ -55,30 +54,27 @@ public abstract class AbstractFilterRequestWrapper extends HttpServletRequestWra
         try {
             Object object = JSON.parse(body);
             // 对值进行过滤,如果对象里有对象,会进行递归
-            body = JSON.toJSONString(object, new ValueFilter() {
-                @Override
-                public Object process(Object object, String name, Object value) {
-                    if (value instanceof String) {
-                        value = filter((String) value);
-                    }
-                    if (value instanceof JSONArray) {
-                        JSONArray array = (JSONArray) value;
-                        for (int i = 0; i < array.size(); i++) {
-                            Object element = array.get(i);
-                            if (element instanceof String) {
-                                array.set(i, filter((String) element));
-                            }
+            body = JSON.toJSONString(object, (com.alibaba.fastjson.serializer.ValueFilter) (obj, name, value) -> {
+                if (value instanceof String) {
+                    value = valueFilter.process((String) value);
+                }
+                if (value instanceof JSONArray) {
+                    JSONArray array = (JSONArray) value;
+                    for (int i = 0; i < array.size(); i++) {
+                        Object element = array.get(i);
+                        if (element instanceof String) {
+                            array.set(i, valueFilter.process((String) element));
                         }
                     }
-                    return value;
                 }
+                return value;
             });
 
         } catch (Exception e) {
             log.error("解析RequestBody内容出错", e);
         }
 
-        final ByteArrayInputStream bis = new ByteArrayInputStream(body.getBytes("utf-8"));
+        final ByteArrayInputStream bis = new ByteArrayInputStream(body.getBytes(IOUtils.UTF8));
         return new ServletInputStream() {
 
             @Override
@@ -104,41 +100,16 @@ public abstract class AbstractFilterRequestWrapper extends HttpServletRequestWra
     }
 
     /**
-     * 重写getParameter 参数从当前类中的map获取
+     * 重写getParameterMap
      */
-    @Override
-    public String getParameter(String name) {
-        String[] values = getModifiedParameterValues().get(name);
-        if (values == null || values.length == 0) {
-            return null;
-        }
-        return values[0];
-    }
-
     @Override
     public Map<String, String[]> getParameterMap() {
-        return getModifiedParameterValues();
-    }
-
-    /**
-     * 重写getParameterValues
-     */
-    @Override
-    public String[] getParameterValues(String name) {
-        //同上
-        return getModifiedParameterValues().get(name);
-    }
-
-
-    /**
-     * 获取修改后的参数
-     */
-    private Map<String,String[]> getModifiedParameterValues() {
+        Map<String, String[]> params = super.getParameterMap();
         Set<String> set = params.keySet();
         for (String key : set) {
             String[] values = params.get(key);
             for (int i = 0; i < values.length; i++) {
-                values[i] = filter(values[i]);
+                values[i] = valueFilter.process(values[i]);
             }
             params.put(key, values);
         }
@@ -146,11 +117,24 @@ public abstract class AbstractFilterRequestWrapper extends HttpServletRequestWra
     }
 
     /**
-     * 过滤字符串
-     *
-     * @param value 原字符串
-     * @return 新字符串
+     * 重写getParameterValues
      */
-    protected abstract String filter(String value);
+    @Override
+    public String[] getParameterValues(String name) {
+        String[] values = super.getParameterValues(name);
+        for (int i = 0; i < values.length; i++) {
+            values[i] = valueFilter.process(values[i]);
+        }
+        return values;
+    }
+
+    /**
+     * 重写getParameter
+     */
+    @Override
+    public String getParameter(String name) {
+        String value = super.getParameter(name);
+        return valueFilter.process(value);
+    }
 
 }

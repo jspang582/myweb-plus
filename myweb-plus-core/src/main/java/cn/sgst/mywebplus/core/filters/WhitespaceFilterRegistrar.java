@@ -15,11 +15,11 @@ import java.beans.Introspector;
  * @email: fli@sstir.cn
  * @date: 2021/9/16 17:43
  */
-public class TrimFilterRegistrar implements ImportBeanDefinitionRegistrar {
+public class WhitespaceFilterRegistrar implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableTrimFilter.class.getName()));
+        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableWhitespaceFilter.class.getName()));
 
         String[] includeUrlPatterns = attributes.getStringArray("includeUrlPatterns");
         String[] excludeUrlPatterns = attributes.getStringArray("excludeUrlPatterns");
@@ -27,12 +27,12 @@ public class TrimFilterRegistrar implements ImportBeanDefinitionRegistrar {
         Number order = attributes.getNumber("order");
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(FilterRegistrationFactoryBean.class);
-        ParameterFilter filter = new ParameterFilter();
+        WhitespaceFilter filter = new WhitespaceFilter();
         filter.setExcludeUrlPatterns(excludeUrlPatterns);
         builder.addConstructorArgValue(filter);
         builder.addPropertyValue("urlPatterns", includeUrlPatterns);
         builder.addPropertyValue("order", order.intValue());
 
-        registry.registerBeanDefinition(Introspector.decapitalize(ParameterFilter.class.getSimpleName()), builder.getBeanDefinition());
+        registry.registerBeanDefinition(Introspector.decapitalize(WhitespaceFilter.class.getSimpleName()), builder.getBeanDefinition());
     }
 }

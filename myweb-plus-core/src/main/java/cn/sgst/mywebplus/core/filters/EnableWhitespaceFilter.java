@@ -15,8 +15,8 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(TrimFilterRegistrar.class)
-public @interface EnableTrimFilter {
+@Import(WhitespaceFilterRegistrar.class)
+public @interface EnableWhitespaceFilter {
 
     /**
      * 需要拦截的请求,支持通配符

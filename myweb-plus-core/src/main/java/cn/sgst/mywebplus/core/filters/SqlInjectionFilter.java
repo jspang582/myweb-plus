@@ -40,12 +40,10 @@ public class SqlInjectionFilter extends AntPathMatcherSupport implements Filter 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-
         if (shouldFilter(req)) {
             String method = req.getMethod();
             if (ArrayUtil.containsIgnoreCase(methods, method)) {
-                SqlInjectionFilterRequestWrapper sqlInjectionRequestWrapper = new SqlInjectionFilterRequestWrapper(req);
-                chain.doFilter(sqlInjectionRequestWrapper, response);
+                chain.doFilter(new FilterRequestWrapper(req, new SqlInjectionValueFilter()), response);
             } else {
                 chain.doFilter(req, response);
             }

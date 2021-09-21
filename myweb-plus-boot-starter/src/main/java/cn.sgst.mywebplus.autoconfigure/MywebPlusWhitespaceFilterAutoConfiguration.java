@@ -1,6 +1,6 @@
 package cn.sgst.mywebplus.autoconfigure;
 
-import cn.sgst.mywebplus.core.filters.EnableTrimFilter;
+import cn.sgst.mywebplus.core.filters.EnableWhitespaceFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import javax.servlet.DispatcherType;
 @Configuration
 @ConditionalOnClass({DispatcherType.class,DispatcherServlet.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableTrimFilter
-public class MywebPlusParameterFilterAutoConfiguration {
+@EnableWhitespaceFilter
+public class MywebPlusWhitespaceFilterAutoConfiguration {
 
 }

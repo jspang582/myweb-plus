@@ -35,8 +35,7 @@ public class XssFilter extends AntPathMatcherSupport implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (shouldFilter((HttpServletRequest) request)) {
-            HTMLFilter htmlFilter = new HTMLFilter(conf);
-            chain.doFilter(new XssFilterRequestWrapper((HttpServletRequest) request, htmlFilter), response);
+            chain.doFilter(new FilterRequestWrapper((HttpServletRequest) request, new XssValueFilter(new HTMLFilter(conf))), response);
         } else {
             chain.doFilter(request, response);
         }
