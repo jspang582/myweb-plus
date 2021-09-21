@@ -2,6 +2,8 @@ package cn.sgst.mywebplus.core;
 
 
 import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+
 import java.lang.annotation.*;
 
 /**
@@ -14,6 +16,16 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({WebLogAspect.class})
+@Import(WebLogRegistrar.class)
 public @interface EnableWebLog {
+
+    /**
+     * 需要记录web日志的beanName,支持通配符
+     */
+    String[] beanNames() default {"*Controller"};
+
+    /**
+     * 执行顺序,数值越小越先执行
+     */
+    int order() default Ordered.LOWEST_PRECEDENCE;
 }
