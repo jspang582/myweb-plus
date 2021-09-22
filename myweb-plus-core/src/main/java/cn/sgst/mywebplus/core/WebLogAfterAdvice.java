@@ -16,6 +16,6 @@ import java.lang.reflect.Method;
 public class WebLogAfterAdvice implements AfterReturningAdvice {
     @Override
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) {
-        log.debug("返回值 : " + returnValue);
+        log.info("返回值 : " + returnValue);
     }
 }

@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core;
 
+import cn.hutool.core.util.ArrayUtil;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -8,6 +9,8 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.beans.Introspector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 注册advice和自动代理creator
@@ -21,19 +24,32 @@ public class WebLogRegistrar implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         registerBeforeAdvice(registry);
-        registerAroundAdvice(registry);
-        registerAfterAdvice(registry);
-        registerAutoProxyCreator(metadata, registry);
+        final List<String> interceptorNames = new ArrayList<>();
+        interceptorNames.add(Introspector.decapitalize(WebLogBeforeAdvice.class.getSimpleName()));
+
+        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableWebLog.class.getName()));
+        boolean showExecutionTime = attributes.getBoolean("showExecutionTime");
+        boolean showReturnVal = attributes.getBoolean("showReturnVal");
+
+        if (showExecutionTime) {
+            registerAroundAdvice(registry);
+            interceptorNames.add(Introspector.decapitalize(WebLogAroundAspect.class.getSimpleName()));
+
+        }
+        if (showReturnVal) {
+            registerAfterAdvice(registry);
+            interceptorNames.add(Introspector.decapitalize(WebLogAfterAdvice.class.getSimpleName()));
+        }
+        registerAutoProxyCreator(attributes, registry, interceptorNames);
     }
 
 
-    private void registerAutoProxyCreator(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableWebLog.class.getName()));
+    private void registerAutoProxyCreator(AnnotationAttributes attributes, BeanDefinitionRegistry registry, List<String> interceptorNames) {
         String[] beanNames = attributes.getStringArray("beanNames");
         int order = attributes.getNumber("order").intValue();
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(BeanNameAutoProxyCreator.class);
         builder.addPropertyValue("beanNames", beanNames);
-        builder.addPropertyValue("interceptorNames", new String[]{Introspector.decapitalize(WebLogBeforeAdvice.class.getSimpleName()), Introspector.decapitalize(WebLogAfterAdvice.class.getSimpleName()), Introspector.decapitalize(WebLogAroundAspect.class.getSimpleName())});
+        builder.addPropertyValue("interceptorNames", ArrayUtil.toArray(interceptorNames, String.class));
         builder.addPropertyValue("order", order);
         builder.addPropertyValue("proxyTargetClass", true);
         registry.registerBeanDefinition(Introspector.decapitalize(BeanNameAutoProxyCreator.class.getSimpleName()), builder.getBeanDefinition());

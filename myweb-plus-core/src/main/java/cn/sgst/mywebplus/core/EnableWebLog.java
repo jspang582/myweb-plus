@@ -24,6 +24,17 @@ public @interface EnableWebLog {
      */
     String[] beanNames() default {"*Controller"};
 
+
+    /**
+     * 是否显示执行时间
+     */
+    boolean showExecutionTime() default true;
+
+    /**
+     * 是否显示返回值
+     */
+    boolean showReturnVal() default true;
+
     /**
      * 执行顺序,数值越小越先执行
      */
