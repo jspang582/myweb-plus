@@ -11,23 +11,27 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>myweb-plus-boot-starter</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>starter</description>
+
+    <properties>
+        <skip_maven_deploy>false</skip_maven_deploy>
+    </properties>
 
     <dependencies>
 
         <dependency>
             <groupId>cn.sgst</groupId>
             <artifactId>myweb-plus-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>cn.sgst</groupId>
             <artifactId>myweb-plus-extensions</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
