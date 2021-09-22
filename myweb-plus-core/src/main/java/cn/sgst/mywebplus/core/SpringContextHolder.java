@@ -3,7 +3,6 @@ package cn.sgst.mywebplus.core;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 /**
  * Spring的ApplicationContext的持有者,可以用静态方法的方式获取spring容器中的bean
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @email: fli@sstir.cn
  * @date: 2019/7/26 10:02
  */
-@Component
 public class SpringContextHolder implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
