@@ -24,6 +24,8 @@ public abstract class AbstractEmptyBasedValidator<A extends Annotation,T> implem
 
     /**
      * 子类实现校验
+     * @param value 待校验的值
+     * @return true or false
      */
     protected abstract boolean isValid(T value);
 }
