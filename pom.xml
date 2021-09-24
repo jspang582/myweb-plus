@@ -29,7 +29,7 @@
 
         <skip_maven_deploy>false</skip_maven_deploy>
 
-        <revision>1.2.0.RELEASE</revision>
+        <revision>1.2.1.RELEASE</revision>
     </properties>
 
 
