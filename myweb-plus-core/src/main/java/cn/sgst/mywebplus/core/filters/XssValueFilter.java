@@ -20,6 +20,9 @@ public class XssValueFilter implements ValueFilter {
 
     @Override
     public String process(String value) {
+        if (value == null) {
+            return null;
+        }
         return htmlFilter.filter(value);
     }
 
