@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -104,7 +105,8 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public Map<String, String[]> getParameterMap() {
-        Map<String, String[]> params = super.getParameterMap();
+        // 避免直接修改原map
+        HashMap<String, String[]> params = new HashMap<>(super.getParameterMap());
         Set<String> set = params.keySet();
         for (String key : set) {
             String[] values = params.get(key);
