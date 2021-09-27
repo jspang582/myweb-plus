@@ -1,6 +1,7 @@
 package cn.sgst.mywebplus.core.filters;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.util.IOUtils;
@@ -105,7 +106,6 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public Map<String, String[]> getParameterMap() {
-        // 避免直接修改原map
         HashMap<String, String[]> params = new HashMap<>(super.getParameterMap());
         Set<String> set = params.keySet();
         for (String key : set) {
@@ -124,6 +124,9 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] values = super.getParameterValues(name);
+        if(ArrayUtil.isEmpty(values)) {
+            return values;
+        }
         for (int i = 0; i < values.length; i++) {
             values[i] = valueFilter.process(values[i]);
         }
