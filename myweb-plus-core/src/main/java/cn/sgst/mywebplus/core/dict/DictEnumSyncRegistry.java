@@ -1,5 +1,6 @@
 package cn.sgst.mywebplus.core.dict;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -132,10 +133,13 @@ public class DictEnumSyncRegistry implements Serializable {
             log.info("cannot find synchronizer from dictType :" + dictType);
             return;
         }
-        Collection<DictDetails> dictData = null;
+        List<DictDetails> dictData = null;
         if (provider != null) {
             try {
-                dictData = provider.loadDictsByDictType(dictType);
+                dictData = new ArrayList<>(provider.loadDictsByDictType(dictType));
+                if (CollUtil.isNotEmpty(dictData)) {
+                    Collections.sort(dictData);
+                }
             } catch (Exception e) {
                 throw new LoadDictDetailsException("Failed to load dictData of dictType :" + dictType, e);
             }
@@ -151,16 +155,21 @@ public class DictEnumSyncRegistry implements Serializable {
         if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
         }
-        Collection<DictDetails> dictData = null;
+        List<DictDetails> dictData = null;
         if (provider != null) {
             try {
-                dictData = provider.loadAllDicts();
+                dictData = new ArrayList<>(provider.loadAllDicts());
             } catch (Exception e) {
                 throw new LoadDictDetailsException("Failed to load dictData", e);
             }
 
         }
-        dictData = dictData == null ? new ArrayList<>() : dictData;
+        if (dictData == null) {
+            dictData = Collections.emptyList();
+        }
+        if (CollUtil.isNotEmpty(dictData)) {
+            Collections.sort(dictData);
+        }
         for (DictEnumSynchronizer synchronizer : synchronizers) {
             try {
                 synchronizer.processSync(
