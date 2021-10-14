@@ -7,6 +7,9 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * FilterRegistrationBean FactoryBean
@@ -20,6 +23,14 @@ public class FilterRegistrationFactoryBean<T extends Filter> implements FactoryB
     private final T filter;
 
     private String beanName;
+
+    /**
+     * 初始化参数
+     * @see FilterConfig#getInitParameter(java.lang.String)
+     */
+    @Getter
+    @Setter
+    private Map<String, String> initParameters = new LinkedHashMap<>();
 
     @Getter
     @Setter
@@ -38,6 +49,7 @@ public class FilterRegistrationFactoryBean<T extends Filter> implements FactoryB
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         registration.setFilter(filter);
         registration.addUrlPatterns(urlPatterns);
+        registration.setInitParameters(initParameters);
         registration.setName(beanName);
         registration.setOrder(order);
         return registration;
