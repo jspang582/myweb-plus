@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * @email: fli@sstir.cn
  * @date: 2021/9/17 14:07
  */
-public class AntPathMatcherSupport {
+public class AntPathMatcherSupport extends AntPathMatcher {
 
     /**
      * 排除的路径通配符
@@ -24,8 +24,7 @@ public class AntPathMatcherSupport {
     public boolean shouldFilter(HttpServletRequest request) {
         boolean shouldFilter = true;
         for (String excludeUrlPattern : excludeUrlPatterns) {
-            AntPathMatcher matcher = new AntPathMatcher();
-            if (matcher.match(excludeUrlPattern, request.getRequestURI())) {
+            if (match(excludeUrlPattern, request.getRequestURI())) {
                 shouldFilter = false;
                 break;
             }
