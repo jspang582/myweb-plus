@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Slf4j
-public class DictEnumSyncRegistry implements Serializable {
+public class DictEnumSyncRegistry implements DictEnumSyncCommand, Serializable {
 
     /**
      * spi必须保证线程安全
@@ -127,6 +127,7 @@ public class DictEnumSyncRegistry implements Serializable {
      *
      * @param dictType 数据字典类型
      */
+    @Override
     public synchronized void sync(String dictType) {
         DictEnumSynchronizer synchronizer = getSynchronizer(dictType);
         if (synchronizer == null) {
@@ -151,6 +152,7 @@ public class DictEnumSyncRegistry implements Serializable {
     /**
      * 执行全部同步处理器
      */
+    @Override
     public synchronized void syncAll() {
         if (synchronizers.isEmpty()) {
             log.info("no synchronizer has been registered");
